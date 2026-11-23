@@ -1,18 +1,40 @@
-AssignmentPro — run locally (CREATED BY ZEEYO)
+AssignmentPro — shared server edition (CREATED BY ZEEYO)
 
-START
-  Mac/Linux: double-click start-mac-linux.command
-             (if macOS blocks it: open Terminal, type  cd  then drag this folder in, press Enter,
-              then run:  python3 serve.py )
-  Windows:   double-click start-windows.bat
+WHY THIS EDITION
+  Teachers and students on DIFFERENT devices share one real database, so a student can join
+  a teacher's class with the 6-8 digit code from any phone or computer.
 
-Then open  http://localhost:8080  (it opens automatically). Keep the window open.
+RUN IT ON YOUR COMPUTER
+  Install Node.js 20 or newer (https://nodejs.org), then:
+    Mac/Linux: double-click start-mac-linux.command   (or:  node server.mjs)
+    Windows:   double-click start-windows.bat
+  Open http://localhost:8080 . Data is saved in the "data" folder next to server.mjs — back it up.
 
-ALWAYS use http://localhost:8080 — accounts are saved per address, so a different
-address (or port) will look empty.
+PUT IT ON THE WEB (assignmentpro.edu.smartmathpro.app)
+  Use any host that runs Node or Docker and gives you a persistent disk (Fly.io, Railway, Render,
+  a VPS...). Start command:  node server.mjs   Environment:  PORT (given by the host),
+  DATA_DIR=<path of the persistent disk>.  A Dockerfile is included.
+  Then add a CNAME:  name "assignmentpro.edu"  ->  the address your host gives you.
+  (Static-only hosts such as Netlify Drop / GitHub Pages cannot run the shared database.)
+  Students and teachers must use the https:// address: microphone recording and Google sign-in
+  only work on https:// or http://localhost.
 
-GOOGLE SIGN-IN
-  1. Google Cloud Console -> Credentials -> your OAuth client ->
-     Authorized JavaScript origins -> add:  http://localhost:8080
-  2. OAuth consent screen: if the app is in "Testing", add your Gmail under Test users.
-  3. Put the client ID into OAUTH_CONFIG in index.html (search for OAUTH_CONFIG), save, refresh.
+GOOGLE SIGN-IN (Error 400: origin_mismatch)
+  Google Cloud Console -> APIs & Services -> Credentials -> your OAuth client ->
+  Authorized JavaScript origins -> add EVERY address you use, exactly, no trailing slash:
+     http://localhost:8080
+     https://assignmentpro.edu.smartmathpro.app
+  Your client ID is already in index.html (search OAUTH_CONFIG). No secret key is needed or stored.
+  If the OAuth consent screen is in "Testing", add your Gmail under Test users.
+
+CLASS CODES
+  Every class gets a random unique 6-8 digit number. Teachers can copy it or regenerate it
+  (students, assignments and grades are kept). Old letter-codes are converted automatically.
+
+LIMITS (honest notes)
+  The database is a JSON file written atomically: ideal for a school, a few hundred users.
+  For thousands of simultaneous users move to PostgreSQL.
+
+STATIC HOSTING (optional): the folder "static-hosting" holds CNAME / Caddyfile / _headers / vercel.json.
+Copy them next to index.html only if you must use a static host (single-device mode, no shared classes).
+The file index.html also works by itself: double-click it to open AssignmentPro on one device.

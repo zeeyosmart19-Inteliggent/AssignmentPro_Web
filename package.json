@@ -1,0 +1,2 @@
+{ "name": "assignmentpro", "version": "2.0.0", "description": "AssignmentPro — CREATED BY ZEEYO", "private": true, "type": "module",
+  "scripts": { "start": "node server.mjs" }, "engines": { "node": ">=20" } }

@@ -1,0 +1,8 @@
+assignmentpro.edu.smartmathpro.app {
+	root * /var/www/assignmentpro
+	file_server
+	header Permissions-Policy "microphone=(self)"
+	header Cross-Origin-Opener-Policy "same-origin-allow-popups"
+	header X-Content-Type-Options "nosniff"
+	header Referrer-Policy "strict-origin-when-cross-origin"
+}
