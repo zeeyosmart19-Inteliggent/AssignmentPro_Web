@@ -1,0 +1,20 @@
+# AssignmentPro on Netlify: static page + one Function (/api/*) + Netlify DB (Postgres).
+[build]
+  command = "mkdir -p dist && cp index.html dist/"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "microphone=(self)"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000"

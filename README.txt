@@ -38,3 +38,13 @@ LIMITS (honest notes)
 STATIC HOSTING (optional): the folder "static-hosting" holds CNAME / Caddyfile / _headers / vercel.json.
 Copy them next to index.html only if you must use a static host (single-device mode, no shared classes).
 The file index.html also works by itself: double-click it to open AssignmentPro on one device.
+
+DEPLOY ON NETLIFY ONLY (shared database via Netlify DB / Postgres)
+  Files: netlify.toml, netlify/functions/api.mjs (runs engine.mjs on Postgres), package.json (pg).
+  1. Push this repo to GitHub and in Netlify choose "Add new site -> Import an existing project".
+     (Drag-and-drop "Netlify Drop" does NOT deploy Functions - use the Git import or `netlify deploy --prod`.)
+  2. In the site: Extensions/Database -> enable Netlify DB (or run `npx netlify db init`).
+     This sets the NETLIFY_DATABASE_URL environment variable. Any Postgres URL in DATABASE_URL also works.
+  3. Redeploy. Tables are created automatically on the first request.
+  Every request takes a Postgres advisory lock, so simultaneous users never overwrite each other.
+  Limits: uploads/recordings up to 5 MB (Netlify Functions request limit).
