@@ -22,17 +22,17 @@ const env = {
   ctx: null,
   async get(store, key) {
     if (store === 'kv') {
-      const r = await q('SELECT data FROM ap_kv WHERE key = $1', [key]);
+      const r = await q('SELECT data FROM assignmentpro.ap_kv WHERE key = $1', [key]);
       return r.rows[0] ? r.rows[0].data : undefined;
     }
-    const r = await q('SELECT mime, data FROM ap_files WHERE key = $1', [String(key)]);
+    const r = await q('SELECT mime, data FROM assignmentpro.ap_files WHERE key = $1', [String(key)]);
     return r.rows[0] ? new Blob([r.rows[0].data], { type: r.rows[0].mime || '' }) : undefined;
   },
   async put(store, key, val) {
-    if (store === 'kv') { await q('INSERT INTO ap_kv (key, data) VALUES ($1, $2::jsonb) ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data', [key, JSON.stringify(val)]); return; }
-    await q('INSERT INTO ap_files (key, mime, data) VALUES ($1, $2, $3) ON CONFLICT (key) DO UPDATE SET mime = EXCLUDED.mime, data = EXCLUDED.data', [String(key), val.type || '', Buffer.from(await val.arrayBuffer())]);
+    if (store === 'kv') { await q('INSERT INTO assignmentpro.ap_kv (key, data) VALUES ($1, $2::jsonb) ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data', [key, JSON.stringify(val)]); return; }
+    await q('INSERT INTO assignmentpro.ap_files (key, mime, data) VALUES ($1, $2, $3) ON CONFLICT (key) DO UPDATE SET mime = EXCLUDED.mime, data = EXCLUDED.data', [String(key), val.type || '', Buffer.from(await val.arrayBuffer())]);
   },
-  async del(store, key) { if (store === 'files') await q('DELETE FROM ap_files WHERE key = $1', [String(key)]); },
+  async del(store, key) { if (store === 'files') await q('DELETE FROM assignmentpro.ap_files WHERE key = $1', [String(key)]); },
   tokenGet() { return this.ctx ? this.ctx.token : null; },
   tokenSet(token, remember) { if (this.ctx) this.ctx.out.token = { token, remember: !!remember }; },
   tokenClear() { if (this.ctx) this.ctx.out.clear = true; },
@@ -42,8 +42,9 @@ setEnv(env);
 let schemaReady = false;
 async function ensureSchema(query) {
   if (schemaReady) return;
-  await query('CREATE TABLE IF NOT EXISTS ap_kv (key text PRIMARY KEY, data jsonb NOT NULL)');
-  await query('CREATE TABLE IF NOT EXISTS ap_files (key text PRIMARY KEY, mime text NOT NULL DEFAULT \'\', data bytea NOT NULL)');
+  await query('CREATE SCHEMA IF NOT EXISTS assignmentpro');
+  await query('CREATE TABLE IF NOT EXISTS assignmentpro.ap_kv (key text PRIMARY KEY, data jsonb NOT NULL)');
+  await query('CREATE TABLE IF NOT EXISTS assignmentpro.ap_files (key text PRIMARY KEY, mime text NOT NULL DEFAULT \'\', data bytea NOT NULL)');
   schemaReady = true;
 }
 
@@ -79,7 +80,7 @@ export async function handleApi(req, connect) {
   if (url.pathname === '/api/health') return json(200, { assignmentpro: true, mode: 'server' });
   if (url.pathname === '/api/health/db') {
     try { await withDb(connect, async () => (await q('SELECT 1')).rows); return json(200, { ok: true }); }
-    catch (e) { return json(500, { ok: false, error: String((e && e.message) || e) }); }
+    catch (e) { return json(500, { ok: false, error: String((e && e.message) || e), seenVariables: dbEnvNames() }); }
   }
   const auth = req.headers.get('authorization') || '';
   const ctx = { token: auth.startsWith('Bearer ') ? auth.slice(7).trim() : null, out: {} };
@@ -121,10 +122,20 @@ export async function handleApi(req, connect) {
 }
 
 /** A fresh connection per request: Netlify freezes idle function instances, which kills pooled connections. */
-function dbUrl() {
-  const e = process.env;
-  return e.NETLIFY_DATABASE_URL || e.NETLIFY_DATABASE_URL_UNPOOLED || e.DATABASE_URL || e.NEON_DATABASE_URL || e.POSTGRES_URL || '';
+function envEntries() {
+  const out = { ...process.env };
+  try { if (typeof Netlify !== 'undefined' && Netlify.env && Netlify.env.toObject) Object.assign(out, Netlify.env.toObject()); } catch { /* not on Netlify */ }
+  return out;
 }
+const isPg = (v) => typeof v === 'string' && /^postgres(ql)?:\/\//i.test(v.trim());
+/** Known names first, then any variable whose value is a Postgres URL (so a differently named variable still works). */
+function dbUrl() {
+  const e = envEntries();
+  for (const k of ['NETLIFY_DATABASE_URL', 'NETLIFY_DATABASE_URL_UNPOOLED', 'DATABASE_URL', 'NEON_DATABASE_URL', 'POSTGRES_URL', 'POSTGRES_PRISMA_URL']) if (isPg(e[k])) return e[k].trim();
+  const any = Object.keys(e).find((k) => isPg(e[k]));
+  return any ? e[any].trim() : '';
+}
+export function dbEnvNames() { const e = envEntries(); return Object.keys(e).filter((k) => /DATA|DB|POSTGRES|NEON|PG|SQL/i.test(k)).map((k) => `${k}${isPg(e[k]) ? ' (postgres url)' : ' (not a postgres url)'}`); }
 async function connectPg() {
   const cs = dbUrl();
   if (!cs) throw new LocalError(503, 'The database is not connected. In Netlify, enable Netlify DB for this site (it sets NETLIFY_DATABASE_URL) and redeploy.');
