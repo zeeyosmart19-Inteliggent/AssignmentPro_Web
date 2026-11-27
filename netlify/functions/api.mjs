@@ -77,6 +77,10 @@ export async function handleApi(req, connect) {
   const url = new URL(req.url);
   const method = req.method;
   if (url.pathname === '/api/health') return json(200, { assignmentpro: true, mode: 'server' });
+  if (url.pathname === '/api/health/db') {
+    try { await withDb(connect, async () => (await q('SELECT 1')).rows); return json(200, { ok: true }); }
+    catch (e) { return json(500, { ok: false, error: String((e && e.message) || e) }); }
+  }
   const auth = req.headers.get('authorization') || '';
   const ctx = { token: auth.startsWith('Bearer ') ? auth.slice(7).trim() : null, out: {} };
   try {
@@ -116,15 +120,22 @@ export async function handleApi(req, connect) {
   }
 }
 
-let pool = null;
+/** A fresh connection per request: Netlify freezes idle function instances, which kills pooled connections. */
+function dbUrl() {
+  const e = process.env;
+  return e.NETLIFY_DATABASE_URL || e.NETLIFY_DATABASE_URL_UNPOOLED || e.DATABASE_URL || e.NEON_DATABASE_URL || e.POSTGRES_URL || '';
+}
 async function connectPg() {
-  if (!pool) {
-    const { default: pg } = await import('pg');
-    const cs = process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
-    if (!cs) throw new Error('No database configured: set NETLIFY_DATABASE_URL (Netlify DB) or DATABASE_URL.');
-    pool = new pg.Pool({ connectionString: cs, max: 1, ssl: /localhost|127\.0\.0\.1/.test(cs) ? false : { rejectUnauthorized: false } });
-  }
-  return pool.connect();
+  const cs = dbUrl();
+  if (!cs) throw new LocalError(503, 'The database is not connected. In Netlify, enable Netlify DB for this site (it sets NETLIFY_DATABASE_URL) and redeploy.');
+  const { default: pg } = await import('pg');
+  const url = new URL(cs); url.searchParams.delete('sslmode'); url.searchParams.delete('channel_binding');
+  const local = /^(localhost|127\.0\.0\.1)$/.test(url.hostname);
+  const client = new pg.Client({ connectionString: url.toString(), ssl: local ? false : { rejectUnauthorized: false }, connectionTimeoutMillis: 10000 });
+  client.on('error', (e) => console.warn('[pg]', e.message));
+  try { await client.connect(); }
+  catch (e) { console.error('[db connect]', e); throw new LocalError(503, 'Cannot reach the database (' + (e.code || e.message) + '). Check the Netlify DB connection and redeploy.'); }
+  return client;
 }
 
 export default async (req) => handleApi(req, connectPg);
