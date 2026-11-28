@@ -1,6 +1,6 @@
 # AssignmentPro on Netlify: static page + one Function (/api/*) + Netlify DB (Postgres).
 [build]
-  command = "mkdir -p dist && cp index.html dist/"
+  command = "mkdir -p dist && cp index.html dist/ && cp -R quran dist/"
   publish = "dist"
 
 [build.environment]
@@ -18,3 +18,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000"
+
+[[headers]]
+  for = "/quran/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

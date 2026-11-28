@@ -810,6 +810,138 @@ html[data-theme="light"] .nav a.active svg { color: #fff; }
   .card.clickable:hover, a.card:hover { transform: translateY(-4px) scale(1.01); }
 }
 
+
+/* =====================================================================
+   Learn Quran — emerald & gold, Arabic typography, geometric pattern.
+   Scoped to .quran so the rest of AssignmentPro is unchanged.
+   ===================================================================== */
+.quran { --q-em: #0f8a64; --q-em-2: #0a6b4d; --q-em-3: #064e39; --q-gold: #e3c06a; --q-gold-2: #f6e2a6; --q-ink: #fdf8ea;
+  --q-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23e3c06a' stroke-width='1' opacity='.55'%3E%3Cpath d='M32 6l7.5 18.5L58 32l-18.5 7.5L32 58l-7.5-18.5L6 32l18.5-7.5z'/%3E%3Crect x='17' y='17' width='30' height='30' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3Cpath d='M0 0l6 6M64 0l-6 6M0 64l6-6M64 64l-6-6'/%3E%3C/g%3E%3C/svg%3E"); }
+.quran .q-hero { position: relative; overflow: hidden; padding: 26px 28px; margin-bottom: 18px; border-radius: var(--r-xl);
+  background: linear-gradient(135deg, rgba(15, 138, 100, .55), rgba(6, 78, 57, .62)) !important; }
+.quran .q-hero::after { content: ""; position: absolute; inset: 0; background-image: var(--q-pattern); background-size: 64px 64px; opacity: .35; pointer-events: none; z-index: 0;
+  -webkit-mask: linear-gradient(90deg, transparent 0%, #000 55%); mask: linear-gradient(90deg, transparent 0%, #000 55%); }
+.quran .q-hero-in { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.quran .q-hero h1 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 750; letter-spacing: -.025em; color: #fff; }
+.quran .q-hero .sub { color: rgba(255, 255, 255, .88); margin-top: 6px; }
+.quran .q-hero .grow { flex: 1; min-width: 200px; }
+.q-eyebrow { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--q-gold-2); margin-bottom: 6px; }
+.q-eyebrow svg { width: 16px; height: 16px; }
+.quran .btn-primary { background: linear-gradient(180deg, #f3d98b, #d9ae4c) !important; color: #2b2006 !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 12px 26px -12px rgba(217, 174, 76, .9) !important; }
+.quran .btn-primary:hover { filter: brightness(1.05); }
+.q-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 18px; }
+.q-tabs a { padding: 9px 16px; border-radius: 999px; font-weight: 650; font-size: 14px; color: var(--text-2); background: rgb(var(--ink) / .06); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .1); }
+.q-tabs a.on { color: #fff; background: linear-gradient(160deg, var(--q-em), var(--q-em-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), inset 0 0 0 1px rgba(227, 192, 106, .55); }
+.q-panel { border-radius: var(--r-lg); }
+.q-panel .section-title h2 { display: flex; align-items: center; gap: 8px; }
+.q-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px; }
+.q-stat { padding: 16px 18px; border-radius: var(--r-lg); color: var(--text); display: grid; gap: 4px; }
+.q-stat .k { font-size: 13px; color: var(--text-2); font-weight: 600; }
+.q-stat .v { font-size: 28px; font-weight: 750; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.q-stat .v small { font-size: 14px; color: var(--text-3); font-weight: 600; letter-spacing: 0; }
+a.q-stat:hover { transform: translateY(-2px); }
+.q-bar { position: relative; height: 6px; border-radius: 6px; background: rgb(var(--ink) / .12); overflow: hidden; display: block; margin-top: 6px; }
+.q-bar.big { height: 8px; }
+.q-bar i, .q-bar b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; }
+.q-bar i { background: linear-gradient(90deg, var(--q-em), #34d399); }
+.q-bar b { background: linear-gradient(90deg, #d9ae4c, var(--q-gold-2)); height: 50%; top: auto; }
+.q-star { position: relative; width: 46px; height: 46px; flex: none; display: grid; place-items: center; }
+.q-star::before, .q-star::after { content: ""; position: absolute; inset: 7px; border-radius: 6px; background: linear-gradient(160deg, var(--q-em), var(--q-em-3)); box-shadow: inset 0 0 0 1.5px var(--q-gold); }
+.q-star::after { transform: rotate(45deg); }
+.q-star span { position: relative; z-index: 1; font-size: 13px; font-weight: 750; color: var(--q-gold-2); font-variant-numeric: tabular-nums; }
+.q-star.sm { width: 38px; height: 38px; } .q-star.sm::before, .q-star.sm::after { inset: 6px; } .q-star.sm span { font-size: 11.5px; }
+.q-star.lg { width: 74px; height: 74px; } .q-star.lg::before, .q-star.lg::after { inset: 11px; border-radius: 9px; } .q-star.lg span { font-size: 21px; }
+.q-lib-tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.q-search { position: relative; flex: 1; min-width: 240px; display: flex; gap: 10px; align-items: center; }
+.q-search > span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-3); display: grid; pointer-events: none; }
+.q-search .input { padding-left: 42px; }
+.q-search.big .input { min-height: 52px; font-size: 16px; }
+.q-seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgb(var(--ink) / .07); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .1); flex-wrap: wrap; }
+.q-seg button { height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; font-weight: 650; font-size: 14px; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; }
+.q-seg button svg { width: 16px; height: 16px; }
+.q-seg button[aria-pressed="true"] { color: #fff; background: linear-gradient(160deg, var(--q-em), var(--q-em-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), inset 0 0 0 1px rgba(227, 192, 106, .5); }
+.q-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px; }
+.q-surah { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 20px; color: var(--text); background: rgb(var(--ink) / .05); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .08);
+  transition: transform .3s var(--spring), background .2s, box-shadow .2s; animation: qIn .5s var(--ease) both; }
+.q-surah:hover { transform: translateY(-2px); background: rgba(15, 138, 100, .18); box-shadow: inset 0 0 0 1px rgba(227, 192, 106, .5); }
+.q-surah:hover .q-star::after { transform: rotate(90deg); transition: transform .6s var(--ease); }
+.q-s-main { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.q-s-name { font-weight: 700; }
+.q-s-meta { font-size: 12.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.q-s-ar { font-family: "Amiri", "Amiri Quran", "Scheherazade New", "Traditional Arabic", serif; font-size: 22px; color: var(--q-gold-2); flex: none; }
+.q-title-ar { font-family: "Amiri", "Amiri Quran", serif; font-size: clamp(34px, 5vw, 52px); color: var(--q-gold-2); line-height: 1.2; text-shadow: 0 2px 14px rgba(0, 0, 0, .25); }
+.q-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border-radius: 999px; margin-bottom: 16px; position: sticky; top: 10px; z-index: 5; }
+.q-tog { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+.q-tog input { width: 18px; height: 18px; accent-color: var(--q-em); }
+.q-size { display: inline-flex; gap: 4px; }
+.q-size .icon-btn { width: auto; padding: 0 10px; font-weight: 700; font-size: 13px; }
+.q-basmala { text-align: center; font-family: "Amiri Quran", "Amiri", serif; font-size: clamp(28px, 4vw, 40px); color: var(--q-gold-2); padding: 14px 0 22px; line-height: 1.8; }
+.q-ayahs { display: grid; gap: 12px; --q-size: 30px; }
+.q-ayah { padding: 16px 20px 18px; border-radius: 22px; background: rgb(var(--ink) / .045); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .08); scroll-margin-top: 90px; animation: qIn .45s var(--ease) both; }
+.q-ayah.hl { background: rgba(15, 138, 100, .16); box-shadow: inset 0 0 0 1px rgba(227, 192, 106, .45); }
+.q-ayah.flash { animation: qFlash 2.2s var(--ease); }
+.q-ayah-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.q-num { font-size: 12.5px; font-weight: 750; color: var(--q-gold-2); padding: 3px 10px; border-radius: 999px; background: rgba(15, 138, 100, .3); box-shadow: inset 0 0 0 1px rgba(227, 192, 106, .45); font-variant-numeric: tabular-nums; margin-right: auto; }
+.q-mark { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: 0; font-size: 13px; font-weight: 650; color: var(--text-2); background: rgb(var(--ink) / .07); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .12); transition: background .2s, color .2s, transform .2s var(--spring); }
+.q-mark svg { width: 15px; height: 15px; }
+.q-mark:hover { color: var(--text); }
+.q-mark:active { transform: scale(.94); }
+.q-mark.on { color: #fff; background: linear-gradient(160deg, var(--q-em), var(--q-em-2)); box-shadow: inset 0 0 0 1px rgba(52, 211, 153, .6); }
+.q-mark.mem.on { color: #2b2006; background: linear-gradient(180deg, #f3d98b, #d9ae4c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6); }
+.q-mark[disabled] { opacity: .7; cursor: default; }
+.q-ar { font-family: "Amiri Quran", "Amiri", "Scheherazade New", "Traditional Arabic", serif; font-size: var(--q-size); line-height: 2.15; text-align: right; color: var(--q-ink); margin: 4px 0 8px; word-spacing: .08em; }
+.q-ar.sm { font-size: 24px; line-height: 2; }
+.q-end { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; padding: 0 .2em; margin: 0 .15em; border-radius: 50%; font-family: "Amiri", serif; font-size: .62em; line-height: 1; color: var(--q-gold-2); box-shadow: inset 0 0 0 1.5px var(--q-gold); vertical-align: middle; }
+.q-en, .q-uz { margin: 6px 0 0; color: var(--text-2); font-size: 15px; line-height: 1.6; }
+.q-uz { color: var(--text-2); border-left: 2px solid rgba(227, 192, 106, .45); padding-left: 10px; }
+.q-ayahs.no-en .q-en, .q-ayahs.no-uz .q-uz { display: none; }
+.q-pager { display: flex; justify-content: space-between; gap: 12px; margin: 22px 0 8px; flex-wrap: wrap; }
+.q-source { font-size: 12px; color: var(--text-3); text-align: center; margin: 16px 0 0; }
+.q-results { display: grid; gap: 10px; }
+.q-result { display: grid; gap: 4px; padding: 14px 16px; border-radius: 18px; color: var(--text); background: rgb(var(--ink) / .05); box-shadow: inset 0 0 0 1px rgb(var(--ink) / .08); }
+.q-result:hover { background: rgba(15, 138, 100, .16); }
+.q-result .q-num { justify-self: start; }
+.q-result mark { background: rgba(227, 192, 106, .45); color: inherit; border-radius: 4px; padding: 0 2px; }
+.q-type { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 11.5px; font-weight: 750; color: #a7f3d0; background: rgba(15, 138, 100, .3); box-shadow: inset 0 0 0 1px rgba(52, 211, 153, .4); vertical-align: middle; margin-right: 4px; }
+.q-type.mem { color: var(--q-gold-2); background: rgba(217, 174, 76, .2); box-shadow: inset 0 0 0 1px rgba(227, 192, 106, .5); }
+.q-count { font-size: 12.5px; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-q-not_started { --c: #c8d0ea; } .st-q-in_progress { --c: var(--amber); } .st-q-redo { --c: var(--rose); } .st-q-completed { --c: #67e8f9; } .st-q-approved { --c: #6ee7b7; }
+.q-progress { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--r-lg); margin-bottom: 14px; }
+.q-progress .grow { flex: 1; min-width: 0; }
+.q-note { margin-bottom: 14px; } .q-note p { margin: 6px 0 0; color: var(--text-2); white-space: pre-wrap; }
+.q-turnin { margin-top: 16px; display: grid; gap: 12px; }
+.q-editor { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.q-range { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
+.q-preview .q-en { font-size: 14px; }
+.q-srow { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.q-srow .grow { flex: 1; min-width: 0; font-weight: 600; }
+.nav a.nav-quran svg, .tabbar a.nav-quran svg { color: var(--q-gold, #e3c06a); }
+.nav a.nav-quran { --q-gold: #e3c06a; }
+@keyframes qIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes qFlash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--q-gold), 0 0 0 6px rgba(227, 192, 106, .25); } 100% { box-shadow: inset 0 0 0 1px rgb(var(--ink) / .08); } }
+@media (max-width: 900px) {
+  .q-editor { grid-template-columns: minmax(0, 1fr); }
+  .q-toolbar { border-radius: 22px; top: 70px; }
+  .q-hero { padding: 20px; }
+  .q-title-ar { width: 100%; text-align: right; }
+}
+@media (max-width: 520px) { .q-range { grid-template-columns: 1fr 1fr; } .q-range .btn { grid-column: 1 / -1; } .q-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .q-surah, .q-ayah { animation: none; } }
+/* light theme */
+html[data-theme="light"] .quran { --q-ink: #13241c; --q-gold-2: #8a6514; }
+html[data-theme="light"] .quran .q-hero .q-eyebrow { color: #f6e2a6; }
+html[data-theme="light"] .quran .q-hero .q-title-ar, html[data-theme="light"] .quran .q-hero .q-star span { color: #f6e2a6; }
+html[data-theme="light"] .q-star span { color: #f6e2a6; }
+html[data-theme="light"] .q-surah:hover, html[data-theme="light"] .q-result:hover { background: rgba(15, 138, 100, .1); }
+html[data-theme="light"] .q-num { color: #0a5a40; background: rgba(15, 138, 100, .12); }
+html[data-theme="light"] .q-type { color: #0a5a40; background: rgba(15, 138, 100, .12); }
+html[data-theme="light"] .q-type.mem { color: #7a5a10; background: rgba(217, 174, 76, .18); }
+html[data-theme="light"] .q-ayah.hl { background: rgba(15, 138, 100, .09); }
+html[data-theme="light"] .st-q-approved { --c: #047857; } html[data-theme="light"] .st-q-completed { --c: #0e7490; }
+html[data-theme="light"] .input:focus, html[data-theme="light"] .select:focus, html[data-theme="light"] .textarea:focus { background: #fff; box-shadow: inset 0 0 0 1px rgba(28, 39, 51, .45), 0 0 0 4px rgba(28, 39, 51, .1); }
+html[data-theme="light"] .ring::before { background: #fff; box-shadow: inset 0 0 0 1px rgba(28, 36, 86, .08); }
+.quran .q-progress .ring::before { background: linear-gradient(160deg, #0f8a64, #064e39); }
+.quran .q-progress .ring span { color: #fff; }
 </style>
   
 </head>
@@ -893,6 +1025,7 @@ const idbDel = (store, key) => env().del(store, key);
 const EMPTY = () => ({
   version: 1, seq: {}, users: [], sessions: [], classes: [], enrollments: [], assignments: [], assignmentStudents: [],
   questions: [], attachments: [], submissions: [], answers: [], recordings: [], notifications: [], messages: [],
+  quranAssignments: [], quranAssignmentStudents: [], quranSubmissions: [], quranProgress: [],
 });
 let db = EMPTY();
 async function load() {
@@ -1286,6 +1419,7 @@ route('POST', '/api/classes/:id/regenerate-code', async ({ user, params }) => {
 route('DELETE', '/api/classes/:id', async ({ user, params, after }) => {
   const c = teacherClass(user, intId(params.id));
   const files = deleteAssignments((a) => a.classId === c.id);
+  deleteQuranAssignments((a) => a.classId === c.id);
   db.enrollments = db.enrollments.filter((e) => e.classId !== c.id);
   db.classes = db.classes.filter((k) => k.id !== c.id);
   after.push(() => removeFiles(files));
@@ -1639,6 +1773,258 @@ route('GET', '/api/teacher/students', async ({ user }) => {
   return { students: out };
 }, { role: 'teacher' });
 
+/* ---------------- Learn Quran ----------------
+ * Quran assignments, submissions and progress live in their own tables and never touch
+ * regular assignments, scores or grades. Ayah counts below come from the verified data in quran/index.json.
+ */
+const QURAN_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
+const QURAN_TOTAL = 6236;
+/** Sets of ayah numbers are stored compactly as range strings: "1-7,9,12-15". */
+function rangesToSet(str) {
+  const out = new Set();
+  for (const part of String(str || '').split(',')) {
+    const m = /^(\d+)(?:-(\d+))?$/.exec(part.trim()); if (!m) continue;
+    const a = Number(m[1]), b = Number(m[2] || m[1]);
+    for (let i = a; i <= b && i - a < 400; i++) out.add(i);
+  }
+  return out;
+}
+function setToRanges(set) {
+  const xs = [...set].filter((n) => Number.isInteger(n) && n > 0).sort((a, b) => a - b); const parts = [];
+  for (let i = 0; i < xs.length; i++) {
+    let j = i; while (j + 1 < xs.length && xs[j + 1] === xs[j] + 1) j++;
+    parts.push(i === j ? String(xs[i]) : `${xs[i]}-${xs[j]}`); i = j;
+  }
+  return parts.join(',');
+}
+const qSurah = (v) => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 114) fail(400, 'Choose a surah from 1 to 114.'); return n; };
+function qAyahList(surah, list, from, to) {
+  const max = QURAN_AYAHS[surah - 1];
+  if (!Array.isArray(list)) fail(400, 'Missing ayahs.');
+  const out = [...new Set(list.map(Number))].filter((n) => Number.isInteger(n) && n >= (from || 1) && n <= (to || max));
+  if (out.length > 300) fail(400, 'Too many ayahs at once.');
+  return out;
+}
+const qAssignTargets = (a) => {
+  const list = classStudents(a.classId);
+  if (a.assignAll) return list;
+  const set = new Set(db.quranAssignmentStudents.filter((x) => x.assignmentId === a.id).map((x) => x.studentId));
+  return list.filter((u) => set.has(u.id));
+};
+const canStudentSeeQ = (a, sid) => enrolled(a.classId, sid) && (a.assignAll || db.quranAssignmentStudents.some((x) => x.assignmentId === a.id && x.studentId === sid));
+const qSubFor = (aid, sid) => db.quranSubmissions.find((s) => s.assignmentId === aid && s.studentId === sid);
+const qTotal = (a) => a.toAyah - a.fromAyah + 1;
+const qDoneCount = (s) => (s ? rangesToSet(s.done).size : 0);
+function teacherQuranAssignment(user, id) { const a = db.quranAssignments.find((x) => x.id === id && x.teacherId === user.id); if (!a) fail(404, 'Quran assignment not found.'); return a; }
+function studentQuranAssignment(user, id) { const a = byId('quranAssignments', id); if (!a || !canStudentSeeQ(a, user.id)) fail(404, 'Quran assignment not found.'); return a; }
+const mapQAssignment = (a, extra = {}) => ({
+  id: a.id, classId: a.classId, className: byId('classes', a.classId)?.name || 'Class', title: a.title, type: a.type, surah: a.surah,
+  fromAyah: a.fromAyah, toAyah: a.toAyah, total: qTotal(a), notes: a.notes || '', dueAt: a.dueAt, assignAll: !!a.assignAll,
+  createdAt: a.createdAt, updatedAt: a.updatedAt, ...extra,
+});
+const mapQSub = (s, a) => s && ({
+  id: s.id, status: s.status, done: [...rangesToSet(s.done)].sort((x, y) => x - y), doneCount: qDoneCount(s), total: qTotal(a),
+  note: s.note || '', feedback: s.feedback || '', startedAt: s.startedAt, updatedAt: s.updatedAt, completedAt: s.completedAt || null, reviewedAt: s.reviewedAt || null,
+});
+function deleteQuranAssignments(pred) {
+  const ids = new Set(db.quranAssignments.filter(pred).map((a) => a.id));
+  if (!ids.size) return;
+  db.quranSubmissions = db.quranSubmissions.filter((s) => !ids.has(s.assignmentId));
+  db.quranAssignmentStudents = db.quranAssignmentStudents.filter((x) => !ids.has(x.assignmentId));
+  db.quranAssignments = db.quranAssignments.filter((a) => !ids.has(a.id));
+}
+function quranProgressOf(userId, create) {
+  let p = db.quranProgress.find((x) => x.userId === userId);
+  if (!p && create) { p = { userId, read: {}, mem: {}, last: null }; db.quranProgress.push(p); }
+  return p;
+}
+/** Personal tracking: separate counters for reading and memorization. */
+function markQuranProgress(userId, surah, ayahs, kind, value) {
+  const p = quranProgressOf(userId, true);
+  const key = kind === 'mem' ? 'mem' : 'read';
+  const set = rangesToSet(p[key][surah]);
+  for (const n of ayahs) value ? set.add(n) : set.delete(n);
+  if (set.size) p[key][surah] = setToRanges(set); else delete p[key][surah];
+}
+function quranSummary(p) {
+  const per = (obj) => { const out = {}; let total = 0; for (const [k, v] of Object.entries(obj || {})) { const n = rangesToSet(v).size; if (n) { out[k] = n; total += n; } } return { bySurah: out, total }; };
+  const read = per(p && p.read), mem = per(p && p.mem);
+  const fullSurahs = (by) => Object.entries(by).filter(([k, n]) => n >= QURAN_AYAHS[Number(k) - 1]).length;
+  return { read: { ...read, surahsComplete: fullSurahs(read.bySurah) }, memorized: { ...mem, surahsComplete: fullSurahs(mem.bySurah) }, last: (p && p.last) || null, totalAyahs: QURAN_TOTAL };
+}
+function validateQuranAssignment(user, b) {
+  const type = b.type === 'memorization' ? 'memorization' : b.type === 'reading' ? 'reading' : fail(400, 'Choose Reading or Memorization.');
+  const classId = intId(b.classId); teacherClass(user, classId);
+  const surah = qSurah(b.surah); const max = QURAN_AYAHS[surah - 1];
+  const fromAyah = b.fromAyah == null || b.fromAyah === '' ? 1 : Number(b.fromAyah);
+  const toAyah = b.toAyah == null || b.toAyah === '' ? max : Number(b.toAyah);
+  if (!Number.isInteger(fromAyah) || !Number.isInteger(toAyah) || fromAyah < 1 || toAyah > max || fromAyah > toAyah) fail(400, `Choose ayahs between 1 and ${max} for this surah.`);
+  const title = str(b.title, { min: 1, max: 160, field: 'Title' });
+  const notes = str(b.notes, { max: 2000, field: 'Notes' });
+  let dueAt = null;
+  if (b.dueAt !== null && b.dueAt !== undefined && b.dueAt !== '') { dueAt = Number(b.dueAt); if (!Number.isFinite(dueAt) || dueAt < 0) fail(400, 'Invalid deadline.'); }
+  const assignAll = b.assignAll !== false;
+  const ids = Array.isArray(b.studentIds) ? [...new Set(b.studentIds.map(Number).filter(Number.isInteger))] : [];
+  const targets = ids.filter((id) => enrolled(classId, id));
+  if (!assignAll && !targets.length) fail(400, 'Select at least one student, or assign to the entire class.');
+  return { type, classId, surah, fromAyah, toAyah, title, notes, dueAt, assignAll, targets };
+}
+function saveQuranTargets(aid, assignAll, targets) {
+  db.quranAssignmentStudents = db.quranAssignmentStudents.filter((x) => x.assignmentId !== aid);
+  if (!assignAll) targets.forEach((sid) => db.quranAssignmentStudents.push({ assignmentId: aid, studentId: sid }));
+}
+function notifyQuranAssigned(a, onlyIds) {
+  const cls = byId('classes', a.classId);
+  for (const st of qAssignTargets(a)) {
+    if (onlyIds && !onlyIds.has(st.id)) continue;
+    notify(st.id, 'student', 'quran', `New Quran ${a.type === 'memorization' ? 'memorization' : 'reading'}: ${a.title}`, `${cls ? cls.name : 'Class'}${a.dueAt ? ' · due ' + new Date(a.dueAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : ''}`, `#/quran/a/${a.id}`);
+  }
+}
+
+route('GET', '/api/quran/assignments', async ({ user }) => {
+  if (user.role === 'teacher') {
+    return {
+      assignments: db.quranAssignments.filter((a) => a.teacherId === user.id).sort((a, b) => b.createdAt - a.createdAt).map((a) => {
+        const subs = db.quranSubmissions.filter((s) => s.assignmentId === a.id);
+        return mapQAssignment(a, {
+          assigned: qAssignTargets(a).length, toReview: subs.filter((s) => s.status === 'completed').length,
+          approved: subs.filter((s) => s.status === 'approved').length, inProgress: subs.filter((s) => s.status === 'in_progress' || s.status === 'redo').length,
+        });
+      }),
+    };
+  }
+  return {
+    assignments: db.quranAssignments.filter((a) => canStudentSeeQ(a, user.id)).sort((a, b) => (a.dueAt || 9e15) - (b.dueAt || 9e15) || b.createdAt - a.createdAt).map((a) => {
+      const s = qSubFor(a.id, user.id);
+      return mapQAssignment(a, { teacherName: userById(a.teacherId)?.name || 'Teacher', status: s ? s.status : 'not_started', doneCount: qDoneCount(s), feedback: s?.feedback || '' });
+    }),
+  };
+});
+route('POST', '/api/quran/assignments', async ({ user, body: b }) => {
+  const v = validateQuranAssignment(user, b); const t = now();
+  const a = { id: nextId('quranAssignments'), teacherId: user.id, classId: v.classId, title: v.title, type: v.type, surah: v.surah, fromAyah: v.fromAyah, toAyah: v.toAyah, notes: v.notes, dueAt: v.dueAt, assignAll: v.assignAll, createdAt: t, updatedAt: t };
+  db.quranAssignments.push(a);
+  saveQuranTargets(a.id, v.assignAll, v.targets);
+  notifyQuranAssigned(a);
+  return { id: a.id };
+}, { role: 'teacher' });
+route('PUT', '/api/quran/assignments/:id', async ({ user, params, body: b }) => {
+  const a = teacherQuranAssignment(user, intId(params.id));
+  const v = validateQuranAssignment(user, b);
+  const started = db.quranSubmissions.some((s) => s.assignmentId === a.id);
+  if (started && (v.classId !== a.classId || v.surah !== a.surah || v.fromAyah !== a.fromAyah || v.toAyah !== a.toAyah || v.type !== a.type)) {
+    fail(400, 'Students have already started this assignment, so its class, type, surah and ayahs cannot be changed. Create a new assignment instead.');
+  }
+  const before = new Set(qAssignTargets(a).map((s) => s.id));
+  Object.assign(a, { classId: v.classId, title: v.title, type: v.type, surah: v.surah, fromAyah: v.fromAyah, toAyah: v.toAyah, notes: v.notes, dueAt: v.dueAt, assignAll: v.assignAll, updatedAt: now() });
+  saveQuranTargets(a.id, v.assignAll, v.targets);
+  const added = new Set(qAssignTargets(a).map((s) => s.id).filter((id) => !before.has(id)));
+  if (added.size) notifyQuranAssigned(a, added);
+  return { id: a.id };
+}, { role: 'teacher' });
+route('DELETE', '/api/quran/assignments/:id', async ({ user, params }) => {
+  const a = teacherQuranAssignment(user, intId(params.id));
+  deleteQuranAssignments((x) => x.id === a.id);
+  return { ok: true };
+}, { role: 'teacher' });
+route('GET', '/api/quran/assignments/:id', async ({ user, params }) => {
+  const id = intId(params.id);
+  if (user.role === 'teacher') {
+    const a = teacherQuranAssignment(user, id);
+    const studentIds = a.assignAll ? [] : db.quranAssignmentStudents.filter((x) => x.assignmentId === a.id).map((x) => x.studentId);
+    const progress = qAssignTargets(a).map((st) => {
+      const s = qSubFor(a.id, st.id);
+      return { student: { id: st.id, name: st.name, email: st.email }, submissionId: s?.id || null, status: s ? s.status : 'not_started', doneCount: qDoneCount(s), total: qTotal(a), note: s?.note || '', feedback: s?.feedback || '', updatedAt: s?.updatedAt || null, completedAt: s?.completedAt || null };
+    });
+    return { assignment: mapQAssignment(a, { studentIds }), progress };
+  }
+  const a = studentQuranAssignment(user, id);
+  return { assignment: mapQAssignment(a, { teacherName: userById(a.teacherId)?.name || 'Teacher' }), submission: mapQSub(qSubFor(a.id, user.id), a) };
+});
+route('POST', '/api/quran/assignments/:id/mark', async ({ user, params, body: b }) => {
+  const a = studentQuranAssignment(user, intId(params.id));
+  const ayahs = qAyahList(a.surah, b.ayahs, a.fromAyah, a.toAyah);
+  let s = qSubFor(a.id, user.id); const t = now();
+  if (s && (s.status === 'completed' || s.status === 'approved')) fail(409, 'This assignment is already turned in.');
+  if (!s) {
+    s = { id: nextId('quranSubmissions'), assignmentId: a.id, studentId: user.id, status: 'in_progress', done: '', note: '', feedback: '', startedAt: t, updatedAt: t };
+    db.quranSubmissions.push(s);
+  }
+  if (s.status === 'redo') s.status = 'in_progress';
+  const set = rangesToSet(s.done);
+  for (const n of ayahs) b.done === false ? set.delete(n) : set.add(n);
+  s.done = setToRanges(set); s.updatedAt = t;
+  if (b.done !== false) markQuranProgress(user.id, a.surah, ayahs, a.type === 'memorization' ? 'mem' : 'read', true);
+  if (a.type === 'memorization' && b.done !== false) markQuranProgress(user.id, a.surah, ayahs, 'read', true);
+  return { submission: mapQSub(s, a) };
+}, { role: 'student' });
+route('POST', '/api/quran/assignments/:id/complete', async ({ user, params, body: b }) => {
+  const a = studentQuranAssignment(user, intId(params.id));
+  const s = qSubFor(a.id, user.id);
+  if (!s) fail(400, 'Mark the ayahs you have finished first.');
+  if (s.status === 'completed' || s.status === 'approved') fail(409, 'This assignment is already turned in.');
+  if (qDoneCount(s) < qTotal(a)) fail(400, `Mark all ${qTotal(a)} ayahs as ${a.type === 'memorization' ? 'memorized' : 'read'} before turning this in.`);
+  const t = now();
+  Object.assign(s, { status: 'completed', note: str(b.note, { max: 1000, field: 'Note' }), completedAt: t, updatedAt: t });
+  notify(a.teacherId, 'teacher', 'quran', `${user.name} completed “${a.title}”`, a.type === 'memorization' ? 'Ready to hear and review' : 'Ready to review', `#/quran/t/${a.id}`);
+  return { submission: mapQSub(s, a) };
+}, { role: 'student' });
+route('POST', '/api/quran/submissions/:id/review', async ({ user, params, body: b }) => {
+  const s = byId('quranSubmissions', intId(params.id)); if (!s) fail(404, 'Submission not found.');
+  const a = teacherQuranAssignment(user, s.assignmentId);
+  if (s.status !== 'completed' && s.status !== 'approved') fail(409, 'This student has not completed the assignment yet.');
+  const result = b.result === 'redo' ? 'redo' : b.result === 'approved' ? 'approved' : fail(400, 'Choose Approve or Ask to redo.');
+  const t = now();
+  Object.assign(s, { status: result, feedback: str(b.feedback, { max: 2000, field: 'Feedback' }), reviewedAt: t, updatedAt: t });
+  if (result === 'redo') { s.completedAt = null; s.done = ''; }
+  notify(s.studentId, 'student', 'quran', result === 'approved' ? `Approved: ${a.title}` : `Please practise again: ${a.title}`, s.feedback ? s.feedback.slice(0, 90) : (result === 'approved' ? 'Well done!' : 'Your teacher asked you to try again.'), `#/quran/a/${a.id}`);
+  return { submission: mapQSub(s, a) };
+}, { role: 'teacher' });
+route('GET', '/api/quran/progress', async ({ user }) => quranSummary(quranProgressOf(user.id, false)));
+route('POST', '/api/quran/progress', async ({ user, body: b }) => {
+  const surah = qSurah(b.surah);
+  if (b.ayahs !== undefined) {
+    const kind = b.kind === 'mem' ? 'mem' : b.kind === 'read' ? 'read' : fail(400, 'Unknown progress type.');
+    markQuranProgress(user.id, surah, qAyahList(surah, b.ayahs), kind, b.value !== false);
+  }
+  if (b.last) {
+    const ayah = Number(b.last.ayah);
+    if (Number.isInteger(ayah) && ayah >= 1 && ayah <= QURAN_AYAHS[surah - 1]) quranProgressOf(user.id, true).last = { surah, ayah, at: now() };
+  }
+  const p = quranProgressOf(user.id, false);
+  return { summary: quranSummary(p), read: p ? p.read[surah] || '' : '', mem: p ? p.mem[surah] || '' : '' };
+});
+route('GET', '/api/quran/progress/:surah', async ({ user, params }) => {
+  const surah = qSurah(params.surah); const p = quranProgressOf(user.id, false);
+  return { read: [...rangesToSet(p && p.read[surah])], mem: [...rangesToSet(p && p.mem[surah])], last: (p && p.last) || null };
+});
+route('GET', '/api/quran/my-students', async ({ user }) => {
+  const map = new Map();
+  for (const c of db.classes.filter((k) => k.teacherId === user.id)) for (const e of db.enrollments.filter((x) => x.classId === c.id)) {
+    const u = userById(e.studentId); if (!u) continue;
+    if (!map.has(u.id)) map.set(u.id, { id: u.id, name: u.name, classes: [] });
+    map.get(u.id).classes.push(c.name);
+  }
+  const mine = db.quranAssignments.filter((a) => a.teacherId === user.id);
+  return {
+    students: [...map.values()].map((s) => {
+      const sum = quranSummary(quranProgressOf(s.id, false));
+      const as = mine.filter((a) => canStudentSeeQ(a, s.id)); const subs = as.map((a) => qSubFor(a.id, s.id)).filter(Boolean);
+      return { ...s, read: sum.read.total, memorized: sum.memorized.total, assigned: as.length, done: subs.filter((x) => x.status === 'completed' || x.status === 'approved').length };
+    }).sort(sortByName),
+  };
+}, { role: 'teacher' });
+route('GET', '/api/quran/students/:id', async ({ user, params }) => {
+  const sid = intId(params.id);
+  if (!db.classes.some((c) => c.teacherId === user.id && enrolled(c.id, sid))) fail(404, 'Student not found.');
+  const st = userById(sid); if (!st) fail(404, 'Student not found.');
+  const list = db.quranAssignments.filter((a) => a.teacherId === user.id && canStudentSeeQ(a, sid)).map((a) => {
+    const s = qSubFor(a.id, sid);
+    return mapQAssignment(a, { status: s ? s.status : 'not_started', doneCount: qDoneCount(s) });
+  });
+  return { student: { id: st.id, name: st.name }, summary: quranSummary(quranProgressOf(sid, false)), assignments: list };
+}, { role: 'teacher' });
+
 /* ---------------- dispatcher ---------------- */
 let queue = Promise.resolve();
 /** Handles one API call. Calls run one at a time and always work on the freshest saved data, so several open tabs stay consistent. */
@@ -1856,6 +2242,7 @@ const P = {
   swap: '<path d="M4 8h14M14.5 4.5L18 8l-3.5 3.5"/><path d="M20 16H6M9.5 12.5L6 16l3.5 3.5"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>',
   moon: '<path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/>',
+  quran: '<path d="M12 6.5c-2-1.6-4.6-2.2-8-2v12.5c3.4-.2 6 .4 8 2 2-1.6 4.6-2.2 8-2V4.5c-3.4-.2-6 .4-8 2z"/><path d="M12 6.5v12.5"/><path d="M7 9.5l1.2-.9M7 12.5l2-.6M15.8 8.6l1.2.9M15 11.9l2 .6"/>',
   ticket: '<path d="M3.5 8.5V6A1.5 1.5 0 015 4.5h14A1.5 1.5 0 0120.5 6v2.5a3.5 3.5 0 000 7V18a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 18v-2.5a3.5 3.5 0 000-7z"/><path d="M14.5 4.5v15" stroke-dasharray="2 2.5"/>',
 };
 function icon(name, cls = '') {
@@ -4270,6 +4657,582 @@ function registerMessageRoutes() {
 Object.assign(__m.social, { startPolling, ensurePolling, stopPolling, refreshNotifications, bindBell, registerMessageRoutes });
 })();
 
+/* ===== quran.js ===== */
+__m.quran = {};
+(() => {
+Object.assign(__m.quran, { registerQuranRoutes });
+// Learn Quran: library, reader, search, Quran assignments and progress. CREATED BY ZEEYO
+// Quran text is loaded from the verified data files in /quran (never generated). Separate from regular assignments.
+const { $, $$, esc, icon, api, state, addRoute, toast, chip, avatar, dueLabel, isOverdue, fmtDateTime, timeAgo, toLocalInput, loadingView, errorView, confirmDialog, openModal, viewAlive, navigate, query } = __m.core;
+const shell = (...a) => __m.app.shell(...a);
+const guard = (...a) => __m.app.guard(...a);
+
+/* ---------- data ---------- */
+let indexP = null; const surahCache = new Map();
+function loadFonts() {
+  if (document.getElementById('q-fonts')) return;
+  const l = document.createElement('link'); l.id = 'q-fonts'; l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&display=swap';
+  document.head.appendChild(l);
+}
+async function getJSON(path) {
+  let r;
+  try { r = await fetch(path, { cache: 'force-cache' }); } catch { throw new Error('Could not load the Quran. Check your internet connection.'); }
+  if (!r.ok) throw new Error(location.protocol === 'file:' ? 'The Quran library needs the website address (it cannot load from a file opened on this device).' : 'Could not load the Quran. Please try again.');
+  return r.json();
+}
+function quranIndex() { if (!indexP) indexP = getJSON('quran/index.json').catch((e) => { indexP = null; throw e; }); return indexP; }
+function surahData(n) {
+  if (!surahCache.has(n)) surahCache.set(n, getJSON(`quran/s${String(n).padStart(3, '0')}.json`).catch((e) => { surahCache.delete(n); throw e; }));
+  return surahCache.get(n);
+}
+const arDigits = (n) => String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+const typeLabel = (t) => (t === 'madani' ? 'Madani' : 'Makki');
+const PREF_KEY = 'ap_q_prefs';
+function prefs() { try { return { en: true, uz: true, size: 30, ...JSON.parse(localStorage.getItem(PREF_KEY) || '{}') }; } catch { return { en: true, uz: true, size: 30 }; } }
+function savePrefs(p) { try { localStorage.setItem(PREF_KEY, JSON.stringify(p)); } catch { /* ignore */ } }
+const Q_STATUS = { not_started: 'Not started', in_progress: 'In progress', redo: 'Practise again', completed: 'Awaiting review', approved: 'Approved' };
+const qChip = (s) => chip(`q-${s}`, Q_STATUS[s] || s);
+const typeChip = (t) => `<span class="q-type ${t === 'memorization' ? 'mem' : ''}">${t === 'memorization' ? 'Memorization' : 'Reading'}</span>`;
+const rangeText = (a, idx) => { const s = idx && idx.surahs[a.surah - 1]; const name = s ? s.name : `Surah ${a.surah}`; return a.fromAyah === 1 && s && a.toAyah === s.ayahs ? `${name} · whole surah (${a.total} ayahs)` : `${name} ${a.surah}:${a.fromAyah}–${a.toAyah} (${a.total} ayahs)`; };
+const star = (n, cls = '') => `<span class="q-star ${cls}" aria-hidden="true"><span>${n}</span></span>`;
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+
+function qHead(eyebrow, title, sub, actions = '') {
+  return `<div class="q-hero glass"><div class="q-hero-in"><div><div class="q-eyebrow">${icon('quran')} ${eyebrow}</div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ''}</div>${actions ? `<div class="row-wrap" style="gap:10px">${actions}</div>` : ''}</div></div>`;
+}
+function qTabs(active) {
+  const isT = state.user.role === 'teacher';
+  const tabs = isT ? [['lib', '#/quran', 'Library'], ['t', '#/quran/t', 'Quran assignments'], ['search', '#/quran/search', 'Search']]
+    : [['lib', '#/quran', 'Library'], ['mine', '#/quran/mine', 'My Quran assignments'], ['search', '#/quran/search', 'Search']];
+  return `<nav class="q-tabs" aria-label="Learn Quran">${tabs.map(([k, h, l]) => `<a href="${h}" class="${k === active ? 'on' : ''}" ${k === active ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+}
+function qView(v, html) { loadFonts(); v.innerHTML = `<div class="view quran">${html}</div>`; return $('.quran', v); }
+
+/* ---------- Library ---------- */
+async function library() {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, prog, list;
+  try { [idx, prog, list] = await Promise.all([quranIndex(), api('GET', '/api/quran/progress'), api('GET', '/api/quran/assignments')]); }
+  catch (e) { if (alive()) v.innerHTML = errorView(e.message); return; }
+  if (!alive()) return;
+  const isT = state.user.role === 'teacher';
+  const last = prog.last && idx.surahs[prog.last.surah - 1];
+  const pending = isT ? [] : list.assignments.filter((a) => a.status === 'not_started' || a.status === 'in_progress' || a.status === 'redo');
+  const toReview = isT ? list.assignments.reduce((t, a) => t + a.toReview, 0) : 0;
+  const root = qView(v, `${qHead('Learn Quran', 'The Noble Quran', '114 surahs · 6,236 ayahs · Arabic with English and Uzbek translations',
+      isT ? `<a class="btn btn-primary" href="#/quran/t/new">${icon('plus')}New Quran assignment</a>` : (last ? `<a class="btn btn-primary" href="#/quran/s/${last.n}?a=${prog.last.ayah}">${icon('book')}Continue ${esc(last.name)} ${last.n}:${prog.last.ayah}</a>` : ''))}
+    ${qTabs('lib')}
+    <div class="q-stats">
+      ${qStat('Ayahs read', prog.read.total, QURAN_TOTAL_UI)}
+      ${qStat('Ayahs memorized', prog.memorized.total, QURAN_TOTAL_UI)}
+      ${qStat('Surahs fully read', prog.read.surahsComplete, 114)}
+      ${isT ? qStat('Awaiting your review', toReview, null, '#/quran/t') : qStat('Quran assignments to do', pending.length, null, '#/quran/mine')}
+    </div>
+    ${pending.length ? `<section class="glass panel q-panel" style="margin-bottom:20px"><div class="section-title"><h2>Your Quran assignments</h2><a class="link" href="#/quran/mine">See all</a></div>
+      <div class="list">${pending.slice(0, 4).map((a) => qAssignItem(a, idx)).join('')}</div></section>` : ''}
+    <section class="glass panel q-panel">
+      <div class="q-lib-tools">
+        <div class="q-search"><span>${icon('target')}</span><input class="input" id="q-filter" type="search" placeholder="Find a surah: name, number, or a reference like 2:255" aria-label="Find a surah" autocomplete="off"></div>
+        <div class="q-seg" role="group" aria-label="Revelation">${[['all', 'All'], ['makki', 'Makki'], ['madani', 'Madani']].map(([k, l]) => `<button type="button" data-rev="${k}" aria-pressed="${k === 'all'}">${l}</button>`).join('')}</div>
+      </div>
+      <div class="q-grid" id="q-grid"></div>
+    </section>`);
+  let rev = 'all', text = '';
+  const draw = () => {
+    const norm = (x) => x.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
+    const t = norm(text);
+    const items = idx.surahs.filter((s) => (rev === 'all' || s.type === rev) && (!t || String(s.n) === t || norm(s.name).includes(t) || norm(s.meaning).includes(t) || (text.trim() && s.ar.includes(text.trim()))));
+    $('#q-grid', root).innerHTML = items.length ? items.map((s) => {
+      const r = prog.read.bySurah[s.n] || 0, m = prog.memorized.bySurah[s.n] || 0;
+      return `<a class="q-surah" href="#/quran/s/${s.n}">${star(s.n)}
+        <span class="q-s-main"><span class="q-s-name">${esc(s.name)}</span><span class="q-s-meta">${esc(s.meaning)} · ${s.ayahs} ayahs · ${typeLabel(s.type)}</span>
+        ${r || m ? `<span class="q-bar" title="${r} read, ${m} memorized"><i style="width:${pct(r, s.ayahs)}%"></i><b style="width:${pct(m, s.ayahs)}%"></b></span>` : ''}</span>
+        <span class="q-s-ar" lang="ar" dir="rtl">${esc(s.ar)}</span></a>`;
+    }).join('') : `<div class="empty" style="grid-column:1/-1"><div class="art">${icon('target')}</div><h3>No surah found</h3><p>Try a name like “Yasin”, a number from 1 to 114, or search inside the ayahs from the Search tab.</p></div>`;
+  };
+  const f = $('#q-filter', root);
+  f.addEventListener('input', () => { text = f.value; draw(); });
+  f.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const ref = parseRef(f.value, idx);
+    if (ref) { e.preventDefault(); navigate(`#/quran/s/${ref.s}?a=${ref.a}`); }
+    else if (f.value.trim().length > 2) navigate(`#/quran/search?q=${encodeURIComponent(f.value.trim())}`);
+  });
+  $('.q-seg', root).addEventListener('click', (e) => { const b = e.target.closest('[data-rev]'); if (!b) return; rev = b.dataset.rev; $$('[data-rev]', root).forEach((x) => x.setAttribute('aria-pressed', String(x === b))); draw(); });
+  draw();
+}
+const QURAN_TOTAL_UI = 6236;
+function qStat(k, val, of, href) {
+  const inner = `<div class="k">${k}</div><div class="v">${val}${of ? `<small> / ${of.toLocaleString()}</small>` : ''}</div>${of ? `<div class="q-bar big"><i style="width:${pct(val, of)}%"></i></div>` : ''}`;
+  return href ? `<a class="q-stat glass" href="${href}">${inner}</a>` : `<div class="q-stat glass">${inner}</div>`;
+}
+function parseRef(v, idx) {
+  const m = /^\s*(\d{1,3})\s*[:.\s]\s*(\d{1,3})\s*$/.exec(v || ''); if (!m) return null;
+  const s = Number(m[1]), a = Number(m[2]); const meta = idx.surahs[s - 1];
+  return meta && a >= 1 && a <= meta.ayahs ? { s, a } : null;
+}
+function qAssignItem(a, idx) {
+  const due = a.dueAt ? `<span style="color:${isOverdue(a.dueAt) && a.status !== 'approved' && a.status !== 'completed' ? 'var(--rose)' : 'inherit'}">${dueLabel(a.dueAt)}</span>` : 'No deadline';
+  return `<a class="list-item" href="#/quran/a/${a.id}">${star(a.surah, 'sm')}
+    <div class="grow"><div class="title">${esc(a.title)}</div><div class="sub">${typeChip(a.type)} ${esc(rangeText(a, idx))} · ${due}</div></div>
+    <span class="q-count">${a.doneCount}/${a.total}</span>${qChip(a.status)}</a>`;
+}
+
+/* ---------- Reader ---------- */
+async function reader({ n }) {
+  const v = shell('quran'); const alive = viewAlive();
+  const sn = Number(n);
+  v.innerHTML = loadingView();
+  let idx, data, mine;
+  try {
+    idx = await quranIndex();
+    if (!Number.isInteger(sn) || sn < 1 || sn > 114) throw new Error('That surah does not exist. Choose a number from 1 to 114.');
+    [data, mine] = await Promise.all([surahData(sn), api('GET', `/api/quran/progress/${sn}`)]);
+  } catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran'); return; }
+  if (!alive()) return;
+  const meta = idx.surahs[sn - 1];
+  const read = new Set(mine.read), mem = new Set(mine.mem);
+  const p = prefs();
+  const q = query(); const focus = Number(q.get('a')) || 0;
+  const hl = /^(\d+)-(\d+)$/.exec(q.get('hl') || '');
+  const hlFrom = hl ? Number(hl[1]) : 0, hlTo = hl ? Number(hl[2]) : 0;
+  const prev = sn > 1 ? idx.surahs[sn - 2] : null, next = sn < 114 ? idx.surahs[sn] : null;
+  const root = qView(v, `<a class="back-link" href="#/quran">← All surahs</a>
+    <div class="q-hero glass q-surah-head"><div class="q-hero-in">
+      <div>${star(sn, 'lg')}</div>
+      <div class="grow"><div class="q-eyebrow">${typeLabel(meta.type)} · ${meta.ayahs} ayahs</div><h1>${esc(meta.name)}</h1><p class="sub">${esc(meta.meaning)}</p></div>
+      <div class="q-title-ar" lang="ar" dir="rtl">${esc(meta.ar)}</div>
+    </div></div>
+    <div class="q-toolbar glass glass-thin">
+      <label class="q-tog"><input type="checkbox" id="t-en" ${p.en ? 'checked' : ''}><span>English</span></label>
+      <label class="q-tog"><input type="checkbox" id="t-uz" ${p.uz ? 'checked' : ''}><span>Oʻzbekcha</span></label>
+      <span class="q-size" role="group" aria-label="Arabic text size"><button type="button" class="icon-btn sm" data-size="-2" aria-label="Smaller Arabic text">A−</button><button type="button" class="icon-btn sm" data-size="2" aria-label="Larger Arabic text">A+</button></span>
+      <span class="spacer"></span>
+      <span class="small muted" id="q-read-n"></span>
+      <button type="button" class="btn btn-sm" data-act="read-all">${icon('check')}Mark surah as read</button>
+    </div>
+    ${meta.bismillah ? `<div class="q-basmala" lang="ar" dir="rtl">${esc(idx.basmalah)}</div>` : ''}
+    <div class="q-ayahs ${p.en ? '' : 'no-en'} ${p.uz ? '' : 'no-uz'}" id="q-ayahs" style="--q-size:${p.size}px">
+      ${data.ar.map((ar, i) => {
+        const k = i + 1;
+        return `<article class="q-ayah ${k >= hlFrom && k <= hlTo ? 'hl' : ''}" id="ayah-${k}" data-k="${k}">
+          <div class="q-ayah-tools"><span class="q-num">${sn}:${k}</span>
+            <button type="button" class="q-mark ${read.has(k) ? 'on' : ''}" data-mark="read" aria-pressed="${read.has(k)}" title="Mark as read">${icon('check')}<span>Read</span></button>
+            <button type="button" class="q-mark mem ${mem.has(k) ? 'on' : ''}" data-mark="mem" aria-pressed="${mem.has(k)}" title="Mark as memorized">${icon('star')}<span>Memorized</span></button></div>
+          <p class="q-ar" lang="ar" dir="rtl">${esc(ar)} <span class="q-end">${arDigits(k)}</span></p>
+          <p class="q-en" lang="en">${esc(data.en[i])}</p>
+          <p class="q-uz" lang="uz">${esc(data.uz[i])}</p>
+        </article>`;
+      }).join('')}
+    </div>
+    <div class="q-pager">${prev ? `<a class="btn" href="#/quran/s/${prev.n}">${icon('chevronL')}${esc(prev.name)}</a>` : '<span></span>'}${next ? `<a class="btn" href="#/quran/s/${next.n}">${esc(next.name)}${icon('chevronR')}</a>` : '<span></span>'}</div>
+    <p class="q-source">Arabic: Uthmani script (Tanzil) · English: Saheeh International · Uzbek: Muhammad Sodiq Muhammad Yusuf</p>`);
+  const ayahs = $('#q-ayahs', root);
+  const count = () => { $('#q-read-n', root).textContent = `${read.size}/${meta.ayahs} read · ${mem.size} memorized`; };
+  count();
+  root.addEventListener('change', (e) => {
+    if (e.target.id === 't-en' || e.target.id === 't-uz') {
+      p.en = $('#t-en', root).checked; p.uz = $('#t-uz', root).checked; savePrefs(p);
+      ayahs.classList.toggle('no-en', !p.en); ayahs.classList.toggle('no-uz', !p.uz);
+    }
+  });
+  root.addEventListener('click', async (e) => {
+    const sz = e.target.closest('[data-size]');
+    if (sz) { p.size = Math.max(20, Math.min(52, p.size + Number(sz.dataset.size))); savePrefs(p); ayahs.style.setProperty('--q-size', `${p.size}px`); return; }
+    const mk = e.target.closest('[data-mark]');
+    if (mk) {
+      const k = Number(mk.closest('[data-k]').dataset.k); const kind = mk.dataset.mark; const set = kind === 'mem' ? mem : read;
+      const val = !set.has(k);
+      mk.disabled = true;
+      try {
+        await api('POST', '/api/quran/progress', { surah: sn, ayahs: [k], kind, value: val, last: { ayah: k } });
+        val ? set.add(k) : set.delete(k); mk.classList.toggle('on', val); mk.setAttribute('aria-pressed', String(val)); count();
+      } catch (err) { toast(err.message, 'err'); }
+      mk.disabled = false; return;
+    }
+    if (e.target.closest('[data-act="read-all"]')) {
+      const all = Array.from({ length: meta.ayahs }, (_, i) => i + 1);
+      try {
+        await api('POST', '/api/quran/progress', { surah: sn, ayahs: all, kind: 'read', value: true });
+        all.forEach((k) => read.add(k)); $$('[data-mark="read"]', root).forEach((b) => { b.classList.add('on'); b.setAttribute('aria-pressed', 'true'); }); count();
+        toast(`${meta.name} marked as read`);
+      } catch (err) { toast(err.message, 'err'); }
+    }
+  });
+  // Remember the reading position (the ayah nearest the top of the screen).
+  let lastSent = 0, timer = 0, top = focus || 0; const visible = new Set();
+  const io = new IntersectionObserver((ents) => {
+    for (const en of ents) { const k = Number(en.target.dataset.k); en.isIntersecting ? visible.add(k) : visible.delete(k); }
+    if (visible.size) top = Math.min(...visible);
+    clearTimeout(timer);
+    timer = setTimeout(() => { if (!alive()) { io.disconnect(); return; } if (top && top !== lastSent) { lastSent = top; api('POST', '/api/quran/progress', { surah: sn, last: { ayah: top } }).catch(() => {}); } }, 2500);
+  }, { rootMargin: '0px 0px -70% 0px' });
+  $$('.q-ayah', root).forEach((el) => io.observe(el));
+  if (focus) setTimeout(() => { const el = $(`#ayah-${focus}`, root); if (el) { el.scrollIntoView({ block: 'start', behavior: 'smooth' }); el.classList.add('flash'); } }, 120);
+}
+
+/* ---------- Search ---------- */
+async function searchView() {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx; try { idx = await quranIndex(); } catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran'); return; }
+  if (!alive()) return;
+  const q0 = query().get('q') || '';
+  const root = qView(v, `${qHead('Learn Quran', 'Search the Quran', 'Search Arabic text, English and Uzbek translations, or jump to a reference like 36:58.')}
+    ${qTabs('search')}
+    <section class="glass panel q-panel">
+      <form class="q-search big" id="q-sf"><span>${icon('target')}</span><input class="input" name="q" type="search" value="${esc(q0)}" placeholder="e.g. mercy, sabr, رحمة or 2:255" aria-label="Search the Quran" autocomplete="off"><button class="btn btn-primary" type="submit">Search</button></form>
+      <div id="q-res" style="margin-top:16px"></div>
+    </section>`);
+  const out = $('#q-res', root);
+  const run = async (raw) => {
+    const t = raw.trim(); if (!t) { out.innerHTML = ''; return; }
+    const ref = parseRef(t, idx); if (ref) { navigate(`#/quran/s/${ref.s}?a=${ref.a}`); return; }
+    if (t.length < 2) { out.innerHTML = '<p class="hint">Type at least 2 letters.</p>'; return; }
+    out.innerHTML = '<p class="hint">Searching all 114 surahs…</p>';
+    const strip = (s) => s.replace(/[ً-ٰٟۖ-ۭ]/g, '');
+    const needle = t.toLowerCase(), needleAr = strip(t);
+    const results = []; let total = 0;
+    for (let n = 1; n <= 114; n += 12) {
+      const batch = await Promise.all(Array.from({ length: Math.min(12, 115 - n) }, (_, i) => surahData(n + i)));
+      if (!alive()) return;
+      for (const d of batch) d.ar.forEach((ar, i) => {
+        if (strip(ar).includes(needleAr) || d.en[i].toLowerCase().includes(needle) || d.uz[i].toLowerCase().includes(needle)) { total++; if (results.length < 60) results.push({ s: d.n, a: i + 1, ar, en: d.en[i], uz: d.uz[i] }); }
+      });
+    }
+    const mark = (s) => { const i = s.toLowerCase().indexOf(needle); return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + needle.length)) + '</mark>' + esc(s.slice(i + needle.length)); };
+    out.innerHTML = results.length ? `<p class="hint">${total} ayah${total === 1 ? '' : 's'} found${total > results.length ? ` · showing the first ${results.length}` : ''}.</p>
+      <div class="q-results">${results.map((r) => `<a class="q-result" href="#/quran/s/${r.s}?a=${r.a}"><span class="q-num">${esc(idx.surahs[r.s - 1].name)} ${r.s}:${r.a}</span>
+        <span class="q-ar sm" lang="ar" dir="rtl">${esc(r.ar)}</span><span class="q-en">${mark(r.en)}</span><span class="q-uz">${mark(r.uz)}</span></a>`).join('')}</div>`
+      : `<div class="empty"><div class="art">${icon('target')}</div><h3>No ayahs found</h3><p>Try a different word or spelling.</p></div>`;
+  };
+  $('#q-sf', root).addEventListener('submit', (e) => { e.preventDefault(); const val = e.target.q.value; history.replaceState(null, '', `#/quran/search?q=${encodeURIComponent(val)}`); run(val).catch((err) => { out.innerHTML = `<p class="form-error">${esc(err.message)}</p>`; }); });
+  if (q0) run(q0).catch((err) => { out.innerHTML = `<p class="form-error">${esc(err.message)}</p>`; });
+}
+
+/* ---------- Student: my Quran assignments ---------- */
+async function myAssignments() {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, data;
+  try { [idx, data] = await Promise.all([quranIndex(), api('GET', '/api/quran/assignments')]); } catch (e) { if (alive()) v.innerHTML = errorView(e.message); return; }
+  if (!alive()) return;
+  const list = data.assignments;
+  const pending = list.filter((a) => ['not_started', 'in_progress', 'redo'].includes(a.status));
+  const done = list.filter((a) => a.status === 'completed' || a.status === 'approved');
+  qView(v, `${qHead('Learn Quran', 'My Quran assignments', 'Reading and memorization work from your teachers. Separate from your regular assignments.')}
+    ${qTabs('mine')}
+    <div class="split">
+      <section class="glass panel q-panel"><div class="section-title"><h2>To do <span class="q-count">${pending.length}</span></h2></div>
+        ${pending.length ? `<div class="list">${pending.map((a) => qAssignItem(a, idx)).join('')}</div>` : `<div class="empty"><div class="art">${icon('check')}</div><h3>Nothing to do</h3><p>New Quran assignments from your teachers will appear here.</p></div>`}
+      </section>
+      <section class="glass panel q-panel"><div class="section-title"><h2>Completed <span class="q-count">${done.length}</span></h2></div>
+        ${done.length ? `<div class="list">${done.map((a) => qAssignItem(a, idx)).join('')}</div>` : `<div class="empty"><div class="art">${icon('star')}</div><h3>None yet</h3><p>Assignments you turn in are listed here.</p></div>`}
+      </section>
+    </div>`);
+}
+
+/* ---------- Student: work on one Quran assignment ---------- */
+async function workView({ id }) {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, d, data;
+  try { [idx, d] = await Promise.all([quranIndex(), api('GET', `/api/quran/assignments/${id}`)]); data = await surahData(d.assignment.surah); }
+  catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran/mine'); return; }
+  if (!alive()) return;
+  const a = d.assignment; const meta = idx.surahs[a.surah - 1];
+  let sub = d.submission;
+  const p = prefs();
+  const isMem = a.type === 'memorization'; const verb = isMem ? 'Memorized' : 'Read';
+  const locked = () => sub && (sub.status === 'completed' || sub.status === 'approved');
+  const done = new Set(sub ? sub.done : []);
+  const root = qView(v, `<a class="back-link" href="#/quran/mine">← My Quran assignments</a>
+    <div class="q-hero glass"><div class="q-hero-in">
+      <div>${star(a.surah, 'lg')}</div>
+      <div class="grow"><div class="q-eyebrow">${typeChip(a.type)} ${esc(a.className)} · ${esc(a.teacherName)}</div><h1>${esc(a.title)}</h1>
+        <p class="sub">${esc(rangeText(a, idx))} · ${a.dueAt ? `due ${esc(fmtDateTime(a.dueAt))}` : 'no deadline'}</p></div>
+      <div class="q-title-ar" lang="ar" dir="rtl">${esc(meta.ar)}</div>
+    </div></div>
+    ${a.notes ? `<section class="glass panel q-panel q-note"><b>From your teacher</b><p>${esc(a.notes)}</p></section>` : ''}
+    <div id="q-status"></div>
+    <div class="q-toolbar glass glass-thin">
+      <label class="q-tog"><input type="checkbox" id="t-en" ${p.en ? 'checked' : ''}><span>English</span></label>
+      <label class="q-tog"><input type="checkbox" id="t-uz" ${p.uz ? 'checked' : ''}><span>Oʻzbekcha</span></label>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-sm" data-act="all">${icon('check')}Mark all as ${verb.toLowerCase()}</button>
+    </div>
+    ${a.fromAyah === 1 && meta.bismillah ? `<div class="q-basmala" lang="ar" dir="rtl">${esc(idx.basmalah)}</div>` : ''}
+    <div class="q-ayahs ${p.en ? '' : 'no-en'} ${p.uz ? '' : 'no-uz'}" id="q-ayahs" style="--q-size:${p.size}px">
+      ${Array.from({ length: a.total }, (_, i) => a.fromAyah + i).map((k) => `<article class="q-ayah" data-k="${k}">
+        <div class="q-ayah-tools"><span class="q-num">${a.surah}:${k}</span>
+          <button type="button" class="q-mark ${isMem ? 'mem' : ''}" data-done aria-pressed="false">${icon(isMem ? 'star' : 'check')}<span>${verb}</span></button></div>
+        <p class="q-ar" lang="ar" dir="rtl">${esc(data.ar[k - 1])} <span class="q-end">${arDigits(k)}</span></p>
+        <p class="q-en" lang="en">${esc(data.en[k - 1])}</p><p class="q-uz" lang="uz">${esc(data.uz[k - 1])}</p></article>`).join('')}
+    </div>
+    <section class="glass panel q-panel q-turnin" id="q-turnin"></section>`);
+  const ayahs = $('#q-ayahs', root);
+  const draw = () => {
+    $$('[data-done]', root).forEach((b) => { const on = done.has(Number(b.closest('[data-k]').dataset.k)); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.disabled = !!locked(); });
+    $('[data-act="all"]', root).disabled = !!locked();
+    const n = done.size, all = n >= a.total;
+    const st = sub ? sub.status : 'not_started';
+    $('#q-status', root).innerHTML = `<div class="q-progress glass"><span class="ring" style="--p:${pct(n, a.total)};--size:56px;--ring-c:var(--q-gold)"><span style="font-size:13px">${pct(n, a.total)}%</span></span>
+      <div class="grow"><b>${n} of ${a.total} ayahs ${verb.toLowerCase()}</b><div class="small muted">${qChip(st)}${sub && sub.feedback ? ` · Teacher: “${esc(sub.feedback)}”` : ''}</div></div></div>`;
+    $('#q-turnin', root).innerHTML = locked()
+      ? `<div class="row" style="gap:12px">${icon(st === 'approved' ? 'trophy' : 'clock')}<div><b>${st === 'approved' ? 'Approved by your teacher' : 'Turned in — waiting for your teacher'}</b>${sub.note ? `<div class="small muted">Your note: ${esc(sub.note)}</div>` : ''}</div></div>`
+      : `<div class="field"><label for="q-note">Note for your teacher (optional)</label><textarea class="textarea" id="q-note" rows="2" maxlength="1000" placeholder="${isMem ? 'e.g. I can recite it without looking.' : 'e.g. I read it twice.'}"></textarea></div>
+        <div class="row" style="justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="hint">${all ? 'Everything is marked. You can turn it in.' : `Mark each ayah as ${verb.toLowerCase()} to turn this in.`}</span>
+        <button type="button" class="btn btn-primary" data-act="turnin" ${all ? '' : 'disabled'}>${icon('send')}Turn in</button></div>`;
+  };
+  const send = async (list, val) => {
+    try { sub = (await api('POST', `/api/quran/assignments/${a.id}/mark`, { ayahs: list, done: val })).submission; done.clear(); sub.done.forEach((k) => done.add(k)); draw(); }
+    catch (err) { toast(err.message, 'err'); }
+  };
+  root.addEventListener('change', (e) => {
+    if (e.target.id === 't-en' || e.target.id === 't-uz') { p.en = $('#t-en', root).checked; p.uz = $('#t-uz', root).checked; savePrefs(p); ayahs.classList.toggle('no-en', !p.en); ayahs.classList.toggle('no-uz', !p.uz); }
+  });
+  root.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-done]');
+    if (b && !locked()) { const k = Number(b.closest('[data-k]').dataset.k); b.disabled = true; await send([k], !done.has(k)); return; }
+    if (e.target.closest('[data-act="all"]') && !locked()) { await send(Array.from({ length: a.total }, (_, i) => a.fromAyah + i), true); return; }
+    const t = e.target.closest('[data-act="turnin"]');
+    if (t) {
+      t.disabled = true;
+      try { sub = (await api('POST', `/api/quran/assignments/${a.id}/complete`, { note: ($('#q-note', root) || {}).value || '' })).submission; toast('Turned in. Well done!'); draw(); }
+      catch (err) { toast(err.message, 'err'); t.disabled = false; }
+    }
+  });
+  draw();
+}
+
+/* ---------- Teacher: Quran assignments ---------- */
+async function teacherHome() {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, data, studs;
+  try { [idx, data, studs] = await Promise.all([quranIndex(), api('GET', '/api/quran/assignments'), api('GET', '/api/quran/my-students')]); } catch (e) { if (alive()) v.innerHTML = errorView(e.message); return; }
+  if (!alive()) return;
+  const list = data.assignments;
+  const toReview = list.reduce((t, a) => t + a.toReview, 0);
+  qView(v, `${qHead('Learn Quran · Teacher', 'Quran assignments', 'Assign reading and memorization, follow each student’s progress and review their work.', `<a class="btn btn-primary" href="#/quran/t/new">${icon('plus')}New Quran assignment</a>`)}
+    ${qTabs('t')}
+    <div class="q-stats">
+      ${qStat('Quran assignments', list.length)}
+      ${qStat('Awaiting your review', toReview)}
+      ${qStat('Approved', list.reduce((t, a) => t + a.approved, 0))}
+      ${qStat('Students', studs.students.length)}
+    </div>
+    <section class="glass panel q-panel" style="margin-bottom:20px"><div class="section-title"><h2>Assignments</h2></div>
+      ${list.length ? `<div class="list">${list.map((a) => `<a class="list-item" href="#/quran/t/${a.id}">${star(a.surah, 'sm')}
+        <div class="grow"><div class="title">${esc(a.title)}</div><div class="sub">${typeChip(a.type)} ${esc(a.className)} · ${esc(rangeText(a, idx))} · ${a.dueAt ? dueLabel(a.dueAt) : 'No deadline'}</div></div>
+        ${a.toReview ? `<span class="chip st-q-completed">${a.toReview} to review</span>` : ''}<span class="q-count">${a.approved}/${a.assigned} approved</span></a>`).join('')}</div>`
+        : `<div class="empty"><div class="art">${icon('quran')}</div><h3>No Quran assignments yet</h3><p>Choose a surah or a range of ayahs and assign it as reading or memorization.</p><a class="btn btn-primary" href="#/quran/t/new">${icon('plus')}New Quran assignment</a></div>`}
+    </section>
+    <section class="glass panel q-panel"><div class="section-title"><h2>Students’ Quran progress</h2></div>
+      ${studs.students.length ? `<div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th class="hide-m">Class</th><th>Read</th><th>Memorized</th><th>Assignments done</th></tr></thead><tbody>
+        ${studs.students.map((s) => `<tr class="clickable" data-href="#/quran/t/students/${s.id}" tabindex="0"><td><div class="person">${avatar(s.name, 'sm')}<span class="n">${esc(s.name)}</span></div></td>
+          <td class="hide-m muted">${esc(s.classes.join(', '))}</td><td>${s.read}<span class="faint small"> ayahs</span></td><td>${s.memorized}<span class="faint small"> ayahs</span></td><td>${s.done}/${s.assigned}</td></tr>`).join('')}
+      </tbody></table></div>` : '<p class="hint">Students who join your classes will appear here.</p>'}
+    </section>`);
+  v.addEventListener('click', (e) => { const r = e.target.closest('[data-href]'); if (r) navigate(r.dataset.href); });
+  v.addEventListener('keydown', (e) => { const r = e.target.closest('[data-href]'); if (r && e.key === 'Enter') navigate(r.dataset.href); });
+}
+
+async function editor(params) {
+  const editId = params && params.id ? Number(params.id) : null;
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, classes, existing = null;
+  try {
+    [idx, classes] = await Promise.all([quranIndex(), api('GET', '/api/classes')]);
+    if (editId) existing = (await api('GET', `/api/quran/assignments/${editId}`)).assignment;
+  } catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran/t'); return; }
+  if (!alive()) return;
+  classes = classes.classes;
+  if (!classes.length) {
+    qView(v, `${qHead('Learn Quran · Teacher', 'New Quran assignment', '')}<div class="glass panel empty"><div class="art">${icon('users')}</div><h3>Create a class first</h3><p>Quran assignments are given to the students in one of your classes.</p><a class="btn btn-primary" href="#/t/classes">Go to Classes</a></div>`);
+    return;
+  }
+  const q = query();
+  const m = existing ? { ...existing, studentIds: new Set(existing.studentIds) } : {
+    type: q.get('type') === 'memorization' ? 'memorization' : 'reading', classId: classes[0].id, surah: Number(q.get('s')) || 1, fromAyah: 1, toAyah: null,
+    title: '', notes: '', dueAt: null, assignAll: true, studentIds: new Set(),
+  };
+  if (!m.toAyah) m.toAyah = idx.surahs[m.surah - 1].ayahs;
+  let titleTouched = !!existing; let roster = [];
+  const autoTitle = () => { const s = idx.surahs[m.surah - 1]; const whole = m.fromAyah === 1 && m.toAyah === s.ayahs; return `${m.type === 'memorization' ? 'Memorize' : 'Read'} ${s.name}${whole ? '' : ` ${m.surah}:${m.fromAyah}–${m.toAyah}`}`; };
+  if (!m.title) m.title = autoTitle();
+  const root = qView(v, `<a class="back-link" href="${existing ? `#/quran/t/${existing.id}` : '#/quran/t'}">← Back</a>
+    ${qHead('Learn Quran · Teacher', existing ? 'Edit Quran assignment' : 'New Quran assignment', 'Choose a surah and the ayahs, then who should read or memorize them.')}
+    <div class="q-editor">
+      <div class="form-grid">
+        <section class="glass panel q-panel form-grid">
+          <span class="label">Type</span>
+          <div class="q-seg" role="group" aria-label="Assignment type"><button type="button" data-type="reading">${icon('book')}Reading</button><button type="button" data-type="memorization">${icon('star')}Memorization</button></div>
+          <div class="field"><label for="e-surah">Surah</label><select class="select" id="e-surah">${idx.surahs.map((s) => `<option value="${s.n}" ${s.n === m.surah ? 'selected' : ''}>${s.n}. ${esc(s.name)} — ${esc(s.ar)} (${s.ayahs} ayahs)</option>`).join('')}</select></div>
+          <div class="q-range"><div class="field"><label for="e-from">From ayah</label><input class="input" type="number" id="e-from" min="1"></div>
+            <div class="field"><label for="e-to">To ayah</label><input class="input" type="number" id="e-to" min="1"></div>
+            <button type="button" class="btn" data-act="whole">Whole surah</button></div>
+          <div class="field"><label for="e-title">Title</label><input class="input" id="e-title" maxlength="160" value="${esc(m.title)}"></div>
+          <div class="field"><label for="e-notes">Notes for students (optional)</label><textarea class="textarea" id="e-notes" rows="3" maxlength="2000" placeholder="e.g. Recite to a family member before marking it memorized.">${esc(m.notes)}</textarea></div>
+        </section>
+        <section class="glass panel q-panel"><div class="section-title"><h2>Preview</h2><span class="small muted" id="e-pv-n"></span></div><div id="e-preview" class="q-preview"></div></section>
+      </div>
+      <aside class="form-grid">
+        <section class="glass panel q-panel form-grid">
+          <div class="field"><label for="e-class">Class</label><select class="select" id="e-class">${classes.map((c) => `<option value="${c.id}" ${c.id === m.classId ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
+          <div class="field"><label for="e-due">Deadline</label><input class="input" type="datetime-local" id="e-due" value="${toLocalInput(m.dueAt)}"><span class="hint">Leave empty for no deadline.</span></div>
+        </section>
+        <section class="glass panel q-panel form-grid">
+          <span class="label">Assign to</span>
+          <div class="q-seg" role="group" aria-label="Assign to"><button type="button" data-all="1">Entire class</button><button type="button" data-all="0">Selected students</button></div>
+          <div id="picks"></div>
+        </section>
+        <button type="button" class="btn btn-primary btn-lg" data-act="save">${icon('send')}${existing ? 'Save changes' : 'Assign'}</button>
+      </aside>
+    </div>`);
+  const sel = (s) => $(s, root);
+  const drawRange = () => {
+    const max = idx.surahs[m.surah - 1].ayahs;
+    sel('#e-from').max = max; sel('#e-to').max = max; sel('#e-from').value = m.fromAyah; sel('#e-to').value = m.toAyah;
+    $$('[data-type]', root).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === m.type)));
+    if (!titleTouched) { m.title = autoTitle(); sel('#e-title').value = m.title; }
+    drawPreview();
+  };
+  let pvSeq = 0;
+  const drawPreview = async () => {
+    const my = ++pvSeq; const n = m.toAyah - m.fromAyah + 1;
+    sel('#e-pv-n').textContent = `${n} ayah${n === 1 ? '' : 's'}`;
+    try {
+      const d = await surahData(m.surah); if (my !== pvSeq) return;
+      const ks = Array.from({ length: Math.min(n, 3) }, (_, i) => m.fromAyah + i);
+      sel('#e-preview').innerHTML = ks.map((k) => `<p class="q-ar sm" lang="ar" dir="rtl">${esc(d.ar[k - 1])} <span class="q-end">${arDigits(k)}</span></p><p class="q-en">${esc(d.en[k - 1])}</p>`).join('') + (n > 3 ? `<p class="hint">…and ${n - 3} more. <a class="link" href="#/quran/s/${m.surah}?a=${m.fromAyah}&hl=${m.fromAyah}-${m.toAyah}" target="_blank" rel="noopener">Open in the reader</a></p>` : '');
+    } catch (e) { sel('#e-preview').innerHTML = `<p class="form-error">${esc(e.message)}</p>`; }
+  };
+  const drawAssign = async (reload) => {
+    $$('[data-all]', root).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.all === '1') === m.assignAll)));
+    const picks = sel('#picks');
+    if (reload) {
+      try { roster = (await api('GET', `/api/classes/${m.classId}`)).students; } catch { roster = []; }
+      const valid = new Set(roster.map((s) => s.id)); m.studentIds = new Set([...m.studentIds].filter((x) => valid.has(x)));
+    }
+    if (m.assignAll) { picks.innerHTML = `<p class="hint">Every student in the class — including students who join later. (${roster.length} enrolled now)</p>`; return; }
+    picks.innerHTML = roster.length ? `<div class="row small" style="justify-content:space-between;margin-bottom:8px"><span class="muted"><b id="pick-n">${m.studentIds.size}</b> selected</span></div>
+      <div class="student-picks">${roster.map((s) => `<label class="pick"><input type="checkbox" class="sr-only" value="${s.id}" ${m.studentIds.has(s.id) ? 'checked' : ''}>${avatar(s.name, 'sm')}<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name)}</span></label>`).join('')}</div>`
+      : '<p class="hint">No students have joined this class yet. Share the class code first.</p>';
+  };
+  drawRange(); drawAssign(true);
+  root.addEventListener('click', async (e) => {
+    const t = e.target.closest('[data-type]'); if (t) { m.type = t.dataset.type; drawRange(); return; }
+    const al = e.target.closest('[data-all]'); if (al) { m.assignAll = al.dataset.all === '1'; drawAssign(false); return; }
+    if (e.target.closest('[data-act="whole"]')) { m.fromAyah = 1; m.toAyah = idx.surahs[m.surah - 1].ayahs; drawRange(); return; }
+    const sv = e.target.closest('[data-act="save"]');
+    if (sv) {
+      sv.disabled = true;
+      const body = { type: m.type, classId: m.classId, surah: m.surah, fromAyah: m.fromAyah, toAyah: m.toAyah, title: sel('#e-title').value, notes: sel('#e-notes').value, dueAt: m.dueAt, assignAll: m.assignAll, studentIds: [...m.studentIds] };
+      try {
+        const r = existing ? await api('PUT', `/api/quran/assignments/${existing.id}`, body) : await api('POST', '/api/quran/assignments', body);
+        toast(existing ? 'Quran assignment saved' : 'Quran assignment sent to your students');
+        navigate(`#/quran/t/${r.id}`, { replace: true });
+      } catch (err) { toast(err.message, 'err'); sv.disabled = false; }
+    }
+  });
+  root.addEventListener('input', (e) => { if (e.target.id === 'e-title') titleTouched = true; });
+  root.addEventListener('change', (e) => {
+    const id = e.target.id; const max = idx.surahs[m.surah - 1].ayahs;
+    if (id === 'e-surah') { m.surah = Number(e.target.value); m.fromAyah = 1; m.toAyah = idx.surahs[m.surah - 1].ayahs; drawRange(); }
+    if (id === 'e-from' || id === 'e-to') {
+      let f = Math.round(Number(sel('#e-from').value)) || 1, t2 = Math.round(Number(sel('#e-to').value)) || max;
+      f = Math.min(Math.max(1, f), max); t2 = Math.min(Math.max(1, t2), max); if (f > t2) [f, t2] = [t2, f];
+      m.fromAyah = f; m.toAyah = t2; drawRange();
+    }
+    if (id === 'e-class') { m.classId = Number(e.target.value); drawAssign(true); }
+    if (id === 'e-due') m.dueAt = e.target.value ? new Date(e.target.value).getTime() : null;
+    if (e.target.closest('.pick')) { const sid = Number(e.target.value); e.target.checked ? m.studentIds.add(sid) : m.studentIds.delete(sid); const pn = sel('#pick-n'); if (pn) pn.textContent = m.studentIds.size; }
+  });
+}
+
+async function teacherDetail({ id }) {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, d;
+  try { [idx, d] = await Promise.all([quranIndex(), api('GET', `/api/quran/assignments/${id}`)]); } catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran/t'); return; }
+  if (!alive()) return;
+  const a = d.assignment; const P = d.progress;
+  const count = (s) => P.filter((x) => x.status === s).length;
+  const root = qView(v, `<a class="back-link" href="#/quran/t">← Quran assignments</a>
+    ${qHead(`${a.type === 'memorization' ? 'Memorization' : 'Reading'} · ${esc(a.className)}`, esc(a.title), `${esc(rangeText(a, idx))} · ${a.dueAt ? `due ${esc(fmtDateTime(a.dueAt))}` : 'no deadline'} · ${a.assignAll ? 'whole class' : `${P.length} selected student${P.length === 1 ? '' : 's'}`}`,
+      `<a class="btn" href="#/quran/s/${a.surah}?a=${a.fromAyah}&hl=${a.fromAyah}-${a.toAyah}">${icon('book')}Open in reader</a><a class="btn" href="#/quran/t/${a.id}/edit">${icon('edit')}Edit</a><button type="button" class="btn btn-ghost" data-act="del">${icon('trash')}Delete</button>`)}
+    ${a.notes ? `<section class="glass panel q-panel q-note"><b>Notes for students</b><p>${esc(a.notes)}</p></section>` : ''}
+    <div class="q-stats">${qStat('Not started', count('not_started'))}${qStat('In progress', count('in_progress') + count('redo'))}${qStat('Awaiting review', count('completed'))}${qStat('Approved', count('approved'))}</div>
+    <section class="glass panel q-panel">
+      ${P.length ? `<div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Progress</th><th>Status</th><th class="hide-m">Note</th><th></th></tr></thead><tbody>
+        ${P.map((r) => `<tr><td><div class="person">${avatar(r.student.name, 'sm')}<span class="n">${esc(r.student.name)}</span></div></td>
+          <td><div class="q-bar" style="width:120px"><i style="width:${pct(r.doneCount, r.total)}%"></i></div><span class="small muted">${r.doneCount}/${r.total}</span></td>
+          <td>${qChip(r.status)}</td><td class="hide-m small muted">${r.note ? esc(r.note) : '—'}${r.feedback ? `<div class="faint">You: ${esc(r.feedback)}</div>` : ''}</td>
+          <td>${r.status === 'completed' || r.status === 'approved' ? `<button type="button" class="btn btn-sm ${r.status === 'completed' ? 'btn-primary' : ''}" data-review="${r.submissionId}" data-name="${esc(r.student.name)}">${r.status === 'completed' ? 'Review' : 'Change'}</button>` : ''}</td></tr>`).join('')}
+      </tbody></table></div>` : '<div class="empty"><div class="art">' + icon('users') + '</div><h3>No students assigned</h3><p>Students who join the class will appear here.</p></div>'}
+    </section>`);
+  root.addEventListener('click', async (e) => {
+    if (e.target.closest('[data-act="del"]')) {
+      if (!(await confirmDialog({ title: 'Delete this Quran assignment?', body: 'Student progress on this assignment will be removed. Their personal reading and memorization records stay.', confirm: 'Delete', danger: true }))) return;
+      try { await api('DELETE', `/api/quran/assignments/${a.id}`); toast('Deleted'); navigate('#/quran/t', { replace: true }); } catch (err) { toast(err.message, 'err'); }
+      return;
+    }
+    const rb = e.target.closest('[data-review]'); if (!rb) return;
+    let result = null;
+    const ok = await openModal({
+      iconName: a.type === 'memorization' ? 'star' : 'book', title: `Review ${rb.dataset.name}`,
+      body: a.type === 'memorization' ? 'Listen to the student recite, then approve or ask them to practise again.' : 'Approve the reading or ask the student to read it again.',
+      content: `<div class="field" style="margin-top:12px;text-align:left"><label for="rv-fb">Feedback (optional)</label><textarea class="textarea" id="rv-fb" rows="3" maxlength="2000" placeholder="e.g. Beautiful tajweed! Watch the madd in ayah 3."></textarea></div>`,
+      initialFocus: '#rv-fb',
+      actions: [
+        { label: 'Ask to redo', value: 'redo', handler: (modal) => { result = { result: 'redo', feedback: $('#rv-fb', modal).value }; return true; } },
+        { label: 'Approve', variant: 'primary', value: 'approved', handler: (modal) => { result = { result: 'approved', feedback: $('#rv-fb', modal).value }; return true; } },
+      ],
+    });
+    if (!ok || !result) return;
+    try { await api('POST', `/api/quran/submissions/${rb.dataset.review}/review`, result); toast(result.result === 'approved' ? 'Approved' : 'Sent back to practise'); teacherDetail({ id }); }
+    catch (err) { toast(err.message, 'err'); }
+  });
+}
+
+async function teacherStudent({ id }) {
+  const v = shell('quran'); const alive = viewAlive();
+  v.innerHTML = loadingView();
+  let idx, d;
+  try { [idx, d] = await Promise.all([quranIndex(), api('GET', `/api/quran/students/${id}`)]); } catch (e) { if (alive()) v.innerHTML = errorView(e.message, '#/quran/t'); return; }
+  if (!alive()) return;
+  const s = d.summary;
+  const surahRows = (by) => Object.entries(by).sort((x, y) => Number(x[0]) - Number(y[0])).map(([n, c]) => { const meta = idx.surahs[Number(n) - 1]; return `<div class="q-srow">${star(n, 'sm')}<span class="grow">${esc(meta.name)}</span><div class="q-bar" style="width:110px"><i style="width:${pct(c, meta.ayahs)}%"></i></div><span class="small muted">${c}/${meta.ayahs}</span></div>`; }).join('');
+  qView(v, `<a class="back-link" href="#/quran/t">← Quran assignments</a>
+    ${qHead('Student Quran progress', esc(d.student.name), s.last ? `Last read: ${esc(idx.surahs[s.last.surah - 1].name)} ${s.last.surah}:${s.last.ayah} · ${timeAgo(s.last.at)}` : 'Has not opened the reader yet.')}
+    <div class="q-stats">${qStat('Ayahs read', s.read.total, QURAN_TOTAL_UI)}${qStat('Ayahs memorized', s.memorized.total, QURAN_TOTAL_UI)}${qStat('Surahs fully read', s.read.surahsComplete, 114)}${qStat('Surahs memorized', s.memorized.surahsComplete, 114)}</div>
+    <div class="split">
+      <section class="glass panel q-panel"><div class="section-title"><h2>Your Quran assignments</h2></div>
+        ${d.assignments.length ? `<div class="list">${d.assignments.map((a) => `<a class="list-item" href="#/quran/t/${a.id}">${star(a.surah, 'sm')}<div class="grow"><div class="title">${esc(a.title)}</div><div class="sub">${typeChip(a.type)} ${esc(rangeText(a, idx))}</div></div><span class="q-count">${a.doneCount}/${a.total}</span>${qChip(a.status)}</a>`).join('')}</div>` : '<p class="hint">No Quran assignments for this student yet.</p>'}
+      </section>
+      <section class="glass panel q-panel"><div class="section-title"><h2>Memorized</h2></div>${surahRows(s.memorized.bySurah) || '<p class="hint">Nothing marked yet.</p>'}
+        <div class="section-title" style="margin-top:18px"><h2>Read</h2></div>${surahRows(s.read.bySurah) || '<p class="hint">Nothing marked yet.</p>'}</section>
+    </div>`);
+}
+
+function registerQuranRoutes() {
+  addRoute('/quran', guard(null, library));
+  addRoute('/quran/search', guard(null, searchView));
+  addRoute('/quran/s/:n', guard(null, reader));
+  addRoute('/quran/mine', guard('student', myAssignments));
+  addRoute('/quran/a/:id', guard('student', workView));
+  addRoute('/quran/t', guard('teacher', teacherHome));
+  addRoute('/quran/t/new', guard('teacher', () => editor({})));
+  addRoute('/quran/t/students/:id', guard('teacher', teacherStudent));
+  addRoute('/quran/t/:id/edit', guard('teacher', editor));
+  addRoute('/quran/t/:id', guard('teacher', teacherDetail));
+}
+})();
+
 /* ===== app.js ===== */
 __m.app = {};
 (() => {
@@ -4290,6 +5253,7 @@ const NAV = {
     { key: 'classes', href: '#/t/classes', label: 'Classes', ic: 'users' },
     { key: 'assignments', href: '#/t/assignments', label: 'Assignments', ic: 'book', badge: 'toGrade' },
     { key: 'students', href: '#/t/students', label: 'Students', ic: 'grad' },
+    { key: 'quran', href: '#/quran/t', label: 'Learn Quran', short: 'Quran', ic: 'quran', cls: 'nav-quran' },
     { key: 'messages', href: '#/messages', label: 'Messages', ic: 'message', badge: 'msgs' },
     { key: 'settings', href: '#/settings', label: 'Account', ic: 'settings', desktopOnly: true },
   ],
@@ -4297,7 +5261,8 @@ const NAV = {
     { key: 'dash', href: '#/s', label: 'Dashboard', ic: 'home' },
     { key: 'assignments', href: '#/s/assignments', label: 'Assignments', ic: 'book', badge: 'todo' },
     { key: 'classes', href: '#/s/classes', label: 'Classes', ic: 'users' },
-    { key: 'history', href: '#/s/history', label: 'History', ic: 'history' },
+    { key: 'quran', href: '#/quran', label: 'Learn Quran', short: 'Quran', ic: 'quran', cls: 'nav-quran' },
+    { key: 'history', href: '#/s/history', label: 'History', ic: 'history', desktopOnly: true },
     { key: 'messages', href: '#/messages', label: 'Messages', ic: 'message', badge: 'msgs' },
     { key: 'settings', href: '#/settings', label: 'Account', ic: 'settings', desktopOnly: true },
   ],
@@ -4316,7 +5281,7 @@ function shell(active) {
         ${brandHTML(homeFor(u))}
         <div class="nav-label">${u.role === 'teacher' ? 'Teaching' : 'Learning'}</div>
         <nav class="nav" aria-label="Main">
-          ${items.map((i) => `<a href="${i.href}" data-key="${i.key}">${icon(i.ic)}<span>${i.label}</span>${i.badge ? `<span class="badge" data-badge="${i.badge}" hidden></span>` : ''}</a>`).join('')}
+          ${items.map((i) => `<a href="${i.href}" data-key="${i.key}" class="${i.cls || ''}">${icon(i.ic)}<span>${i.label}</span>${i.badge ? `<span class="badge" data-badge="${i.badge}" hidden></span>` : ''}</a>`).join('')}
           <a role="button" tabindex="0" data-bell aria-label="Notifications">${icon('bell')}<span>Notifications</span><span class="badge" data-bell-badge hidden></span></a>
         </nav>
         <div class="sidebar-foot">
@@ -4331,7 +5296,7 @@ function shell(active) {
         <main id="view"></main>
       </div>
       <nav class="tabbar glass" aria-label="Main">
-        ${items.filter((i) => !i.desktopOnly).map((i) => `<a href="${i.href}" data-key="${i.key}">${icon(i.ic)}<span>${i.label}</span>${i.badge ? `<span class="badge" data-badge="${i.badge}" hidden></span>` : ''}</a>`).join('')}
+        ${items.filter((i) => !i.desktopOnly).map((i) => `<a href="${i.href}" data-key="${i.key}" class="${i.cls || ''}">${icon(i.ic)}<span>${i.short || i.label}</span>${i.badge ? `<span class="badge" data-badge="${i.badge}" hidden></span>` : ''}</a>`).join('')}
       </nav>
     </div>`;
     root = $('#app .shell');
@@ -4595,6 +5560,7 @@ addRoute('/settings', guard(null, settingsView));
 addRoute('/join/:code', joinRoute);
 registerStudentRoutes();
 registerTeacherRoutes();
+__m.quran.registerQuranRoutes();
 registerWorkspaceRoute();
 registerMessageRoutes();
 

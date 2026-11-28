@@ -84,6 +84,14 @@ const server = http.createServer(async (req, res) => {
     if (p === '/favicon.ico') return send(res, 204, undefined);
     if (p === '/api/health') return sendJson(res, 200, { assignmentpro: true, mode: 'server' });
     if (p.startsWith('/api/')) return await handleApi(req, res, url);
+    const qm = /^\/quran\/(index|s\d{3})\.json$/.exec(p);
+    if (qm && (req.method === 'GET' || req.method === 'HEAD')) {
+      try {
+        const buf = await fsp.readFile(path.join(HERE, 'quran', qm[1] + '.json'));
+        const gz = /\bgzip\b/.test(req.headers['accept-encoding'] || '');
+        return send(res, 200, req.method === 'HEAD' ? undefined : (gz ? zlib.gzipSync(buf) : buf), { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=86400', Vary: 'Accept-Encoding', ...(gz ? { 'Content-Encoding': 'gzip' } : {}) });
+      } catch { return send(res, 404, 'Not found', { 'Content-Type': 'text/plain' }); }
+    }
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
     if (p === '/' || p === '/index.html') {
       loadIndex();

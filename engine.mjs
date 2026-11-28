@@ -61,6 +61,7 @@ const idbDel = (store, key) => env().del(store, key);
 const EMPTY = () => ({
   version: 1, seq: {}, users: [], sessions: [], classes: [], enrollments: [], assignments: [], assignmentStudents: [],
   questions: [], attachments: [], submissions: [], answers: [], recordings: [], notifications: [], messages: [],
+  quranAssignments: [], quranAssignmentStudents: [], quranSubmissions: [], quranProgress: [],
 });
 let db = EMPTY();
 async function load() {
@@ -454,6 +455,7 @@ route('POST', '/api/classes/:id/regenerate-code', async ({ user, params }) => {
 route('DELETE', '/api/classes/:id', async ({ user, params, after }) => {
   const c = teacherClass(user, intId(params.id));
   const files = deleteAssignments((a) => a.classId === c.id);
+  deleteQuranAssignments((a) => a.classId === c.id);
   db.enrollments = db.enrollments.filter((e) => e.classId !== c.id);
   db.classes = db.classes.filter((k) => k.id !== c.id);
   after.push(() => removeFiles(files));
@@ -805,6 +807,258 @@ route('GET', '/api/teacher/students', async ({ user }) => {
     return { ...s, assigned: as.length, completed: subs.filter((x) => x.status === 'submitted' || x.status === 'graded').length, avg: avg(graded.map((x) => x.score)), unreadFrom: db.messages.filter((m) => m.fromId === s.id && m.toId === user.id && !m.readAt).length };
   }).sort(sortByName);
   return { students: out };
+}, { role: 'teacher' });
+
+/* ---------------- Learn Quran ----------------
+ * Quran assignments, submissions and progress live in their own tables and never touch
+ * regular assignments, scores or grades. Ayah counts below come from the verified data in quran/index.json.
+ */
+const QURAN_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
+const QURAN_TOTAL = 6236;
+/** Sets of ayah numbers are stored compactly as range strings: "1-7,9,12-15". */
+function rangesToSet(str) {
+  const out = new Set();
+  for (const part of String(str || '').split(',')) {
+    const m = /^(\d+)(?:-(\d+))?$/.exec(part.trim()); if (!m) continue;
+    const a = Number(m[1]), b = Number(m[2] || m[1]);
+    for (let i = a; i <= b && i - a < 400; i++) out.add(i);
+  }
+  return out;
+}
+function setToRanges(set) {
+  const xs = [...set].filter((n) => Number.isInteger(n) && n > 0).sort((a, b) => a - b); const parts = [];
+  for (let i = 0; i < xs.length; i++) {
+    let j = i; while (j + 1 < xs.length && xs[j + 1] === xs[j] + 1) j++;
+    parts.push(i === j ? String(xs[i]) : `${xs[i]}-${xs[j]}`); i = j;
+  }
+  return parts.join(',');
+}
+const qSurah = (v) => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 114) fail(400, 'Choose a surah from 1 to 114.'); return n; };
+function qAyahList(surah, list, from, to) {
+  const max = QURAN_AYAHS[surah - 1];
+  if (!Array.isArray(list)) fail(400, 'Missing ayahs.');
+  const out = [...new Set(list.map(Number))].filter((n) => Number.isInteger(n) && n >= (from || 1) && n <= (to || max));
+  if (out.length > 300) fail(400, 'Too many ayahs at once.');
+  return out;
+}
+const qAssignTargets = (a) => {
+  const list = classStudents(a.classId);
+  if (a.assignAll) return list;
+  const set = new Set(db.quranAssignmentStudents.filter((x) => x.assignmentId === a.id).map((x) => x.studentId));
+  return list.filter((u) => set.has(u.id));
+};
+const canStudentSeeQ = (a, sid) => enrolled(a.classId, sid) && (a.assignAll || db.quranAssignmentStudents.some((x) => x.assignmentId === a.id && x.studentId === sid));
+const qSubFor = (aid, sid) => db.quranSubmissions.find((s) => s.assignmentId === aid && s.studentId === sid);
+const qTotal = (a) => a.toAyah - a.fromAyah + 1;
+const qDoneCount = (s) => (s ? rangesToSet(s.done).size : 0);
+function teacherQuranAssignment(user, id) { const a = db.quranAssignments.find((x) => x.id === id && x.teacherId === user.id); if (!a) fail(404, 'Quran assignment not found.'); return a; }
+function studentQuranAssignment(user, id) { const a = byId('quranAssignments', id); if (!a || !canStudentSeeQ(a, user.id)) fail(404, 'Quran assignment not found.'); return a; }
+const mapQAssignment = (a, extra = {}) => ({
+  id: a.id, classId: a.classId, className: byId('classes', a.classId)?.name || 'Class', title: a.title, type: a.type, surah: a.surah,
+  fromAyah: a.fromAyah, toAyah: a.toAyah, total: qTotal(a), notes: a.notes || '', dueAt: a.dueAt, assignAll: !!a.assignAll,
+  createdAt: a.createdAt, updatedAt: a.updatedAt, ...extra,
+});
+const mapQSub = (s, a) => s && ({
+  id: s.id, status: s.status, done: [...rangesToSet(s.done)].sort((x, y) => x - y), doneCount: qDoneCount(s), total: qTotal(a),
+  note: s.note || '', feedback: s.feedback || '', startedAt: s.startedAt, updatedAt: s.updatedAt, completedAt: s.completedAt || null, reviewedAt: s.reviewedAt || null,
+});
+function deleteQuranAssignments(pred) {
+  const ids = new Set(db.quranAssignments.filter(pred).map((a) => a.id));
+  if (!ids.size) return;
+  db.quranSubmissions = db.quranSubmissions.filter((s) => !ids.has(s.assignmentId));
+  db.quranAssignmentStudents = db.quranAssignmentStudents.filter((x) => !ids.has(x.assignmentId));
+  db.quranAssignments = db.quranAssignments.filter((a) => !ids.has(a.id));
+}
+function quranProgressOf(userId, create) {
+  let p = db.quranProgress.find((x) => x.userId === userId);
+  if (!p && create) { p = { userId, read: {}, mem: {}, last: null }; db.quranProgress.push(p); }
+  return p;
+}
+/** Personal tracking: separate counters for reading and memorization. */
+function markQuranProgress(userId, surah, ayahs, kind, value) {
+  const p = quranProgressOf(userId, true);
+  const key = kind === 'mem' ? 'mem' : 'read';
+  const set = rangesToSet(p[key][surah]);
+  for (const n of ayahs) value ? set.add(n) : set.delete(n);
+  if (set.size) p[key][surah] = setToRanges(set); else delete p[key][surah];
+}
+function quranSummary(p) {
+  const per = (obj) => { const out = {}; let total = 0; for (const [k, v] of Object.entries(obj || {})) { const n = rangesToSet(v).size; if (n) { out[k] = n; total += n; } } return { bySurah: out, total }; };
+  const read = per(p && p.read), mem = per(p && p.mem);
+  const fullSurahs = (by) => Object.entries(by).filter(([k, n]) => n >= QURAN_AYAHS[Number(k) - 1]).length;
+  return { read: { ...read, surahsComplete: fullSurahs(read.bySurah) }, memorized: { ...mem, surahsComplete: fullSurahs(mem.bySurah) }, last: (p && p.last) || null, totalAyahs: QURAN_TOTAL };
+}
+function validateQuranAssignment(user, b) {
+  const type = b.type === 'memorization' ? 'memorization' : b.type === 'reading' ? 'reading' : fail(400, 'Choose Reading or Memorization.');
+  const classId = intId(b.classId); teacherClass(user, classId);
+  const surah = qSurah(b.surah); const max = QURAN_AYAHS[surah - 1];
+  const fromAyah = b.fromAyah == null || b.fromAyah === '' ? 1 : Number(b.fromAyah);
+  const toAyah = b.toAyah == null || b.toAyah === '' ? max : Number(b.toAyah);
+  if (!Number.isInteger(fromAyah) || !Number.isInteger(toAyah) || fromAyah < 1 || toAyah > max || fromAyah > toAyah) fail(400, `Choose ayahs between 1 and ${max} for this surah.`);
+  const title = str(b.title, { min: 1, max: 160, field: 'Title' });
+  const notes = str(b.notes, { max: 2000, field: 'Notes' });
+  let dueAt = null;
+  if (b.dueAt !== null && b.dueAt !== undefined && b.dueAt !== '') { dueAt = Number(b.dueAt); if (!Number.isFinite(dueAt) || dueAt < 0) fail(400, 'Invalid deadline.'); }
+  const assignAll = b.assignAll !== false;
+  const ids = Array.isArray(b.studentIds) ? [...new Set(b.studentIds.map(Number).filter(Number.isInteger))] : [];
+  const targets = ids.filter((id) => enrolled(classId, id));
+  if (!assignAll && !targets.length) fail(400, 'Select at least one student, or assign to the entire class.');
+  return { type, classId, surah, fromAyah, toAyah, title, notes, dueAt, assignAll, targets };
+}
+function saveQuranTargets(aid, assignAll, targets) {
+  db.quranAssignmentStudents = db.quranAssignmentStudents.filter((x) => x.assignmentId !== aid);
+  if (!assignAll) targets.forEach((sid) => db.quranAssignmentStudents.push({ assignmentId: aid, studentId: sid }));
+}
+function notifyQuranAssigned(a, onlyIds) {
+  const cls = byId('classes', a.classId);
+  for (const st of qAssignTargets(a)) {
+    if (onlyIds && !onlyIds.has(st.id)) continue;
+    notify(st.id, 'student', 'quran', `New Quran ${a.type === 'memorization' ? 'memorization' : 'reading'}: ${a.title}`, `${cls ? cls.name : 'Class'}${a.dueAt ? ' · due ' + new Date(a.dueAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : ''}`, `#/quran/a/${a.id}`);
+  }
+}
+
+route('GET', '/api/quran/assignments', async ({ user }) => {
+  if (user.role === 'teacher') {
+    return {
+      assignments: db.quranAssignments.filter((a) => a.teacherId === user.id).sort((a, b) => b.createdAt - a.createdAt).map((a) => {
+        const subs = db.quranSubmissions.filter((s) => s.assignmentId === a.id);
+        return mapQAssignment(a, {
+          assigned: qAssignTargets(a).length, toReview: subs.filter((s) => s.status === 'completed').length,
+          approved: subs.filter((s) => s.status === 'approved').length, inProgress: subs.filter((s) => s.status === 'in_progress' || s.status === 'redo').length,
+        });
+      }),
+    };
+  }
+  return {
+    assignments: db.quranAssignments.filter((a) => canStudentSeeQ(a, user.id)).sort((a, b) => (a.dueAt || 9e15) - (b.dueAt || 9e15) || b.createdAt - a.createdAt).map((a) => {
+      const s = qSubFor(a.id, user.id);
+      return mapQAssignment(a, { teacherName: userById(a.teacherId)?.name || 'Teacher', status: s ? s.status : 'not_started', doneCount: qDoneCount(s), feedback: s?.feedback || '' });
+    }),
+  };
+});
+route('POST', '/api/quran/assignments', async ({ user, body: b }) => {
+  const v = validateQuranAssignment(user, b); const t = now();
+  const a = { id: nextId('quranAssignments'), teacherId: user.id, classId: v.classId, title: v.title, type: v.type, surah: v.surah, fromAyah: v.fromAyah, toAyah: v.toAyah, notes: v.notes, dueAt: v.dueAt, assignAll: v.assignAll, createdAt: t, updatedAt: t };
+  db.quranAssignments.push(a);
+  saveQuranTargets(a.id, v.assignAll, v.targets);
+  notifyQuranAssigned(a);
+  return { id: a.id };
+}, { role: 'teacher' });
+route('PUT', '/api/quran/assignments/:id', async ({ user, params, body: b }) => {
+  const a = teacherQuranAssignment(user, intId(params.id));
+  const v = validateQuranAssignment(user, b);
+  const started = db.quranSubmissions.some((s) => s.assignmentId === a.id);
+  if (started && (v.classId !== a.classId || v.surah !== a.surah || v.fromAyah !== a.fromAyah || v.toAyah !== a.toAyah || v.type !== a.type)) {
+    fail(400, 'Students have already started this assignment, so its class, type, surah and ayahs cannot be changed. Create a new assignment instead.');
+  }
+  const before = new Set(qAssignTargets(a).map((s) => s.id));
+  Object.assign(a, { classId: v.classId, title: v.title, type: v.type, surah: v.surah, fromAyah: v.fromAyah, toAyah: v.toAyah, notes: v.notes, dueAt: v.dueAt, assignAll: v.assignAll, updatedAt: now() });
+  saveQuranTargets(a.id, v.assignAll, v.targets);
+  const added = new Set(qAssignTargets(a).map((s) => s.id).filter((id) => !before.has(id)));
+  if (added.size) notifyQuranAssigned(a, added);
+  return { id: a.id };
+}, { role: 'teacher' });
+route('DELETE', '/api/quran/assignments/:id', async ({ user, params }) => {
+  const a = teacherQuranAssignment(user, intId(params.id));
+  deleteQuranAssignments((x) => x.id === a.id);
+  return { ok: true };
+}, { role: 'teacher' });
+route('GET', '/api/quran/assignments/:id', async ({ user, params }) => {
+  const id = intId(params.id);
+  if (user.role === 'teacher') {
+    const a = teacherQuranAssignment(user, id);
+    const studentIds = a.assignAll ? [] : db.quranAssignmentStudents.filter((x) => x.assignmentId === a.id).map((x) => x.studentId);
+    const progress = qAssignTargets(a).map((st) => {
+      const s = qSubFor(a.id, st.id);
+      return { student: { id: st.id, name: st.name, email: st.email }, submissionId: s?.id || null, status: s ? s.status : 'not_started', doneCount: qDoneCount(s), total: qTotal(a), note: s?.note || '', feedback: s?.feedback || '', updatedAt: s?.updatedAt || null, completedAt: s?.completedAt || null };
+    });
+    return { assignment: mapQAssignment(a, { studentIds }), progress };
+  }
+  const a = studentQuranAssignment(user, id);
+  return { assignment: mapQAssignment(a, { teacherName: userById(a.teacherId)?.name || 'Teacher' }), submission: mapQSub(qSubFor(a.id, user.id), a) };
+});
+route('POST', '/api/quran/assignments/:id/mark', async ({ user, params, body: b }) => {
+  const a = studentQuranAssignment(user, intId(params.id));
+  const ayahs = qAyahList(a.surah, b.ayahs, a.fromAyah, a.toAyah);
+  let s = qSubFor(a.id, user.id); const t = now();
+  if (s && (s.status === 'completed' || s.status === 'approved')) fail(409, 'This assignment is already turned in.');
+  if (!s) {
+    s = { id: nextId('quranSubmissions'), assignmentId: a.id, studentId: user.id, status: 'in_progress', done: '', note: '', feedback: '', startedAt: t, updatedAt: t };
+    db.quranSubmissions.push(s);
+  }
+  if (s.status === 'redo') s.status = 'in_progress';
+  const set = rangesToSet(s.done);
+  for (const n of ayahs) b.done === false ? set.delete(n) : set.add(n);
+  s.done = setToRanges(set); s.updatedAt = t;
+  if (b.done !== false) markQuranProgress(user.id, a.surah, ayahs, a.type === 'memorization' ? 'mem' : 'read', true);
+  if (a.type === 'memorization' && b.done !== false) markQuranProgress(user.id, a.surah, ayahs, 'read', true);
+  return { submission: mapQSub(s, a) };
+}, { role: 'student' });
+route('POST', '/api/quran/assignments/:id/complete', async ({ user, params, body: b }) => {
+  const a = studentQuranAssignment(user, intId(params.id));
+  const s = qSubFor(a.id, user.id);
+  if (!s) fail(400, 'Mark the ayahs you have finished first.');
+  if (s.status === 'completed' || s.status === 'approved') fail(409, 'This assignment is already turned in.');
+  if (qDoneCount(s) < qTotal(a)) fail(400, `Mark all ${qTotal(a)} ayahs as ${a.type === 'memorization' ? 'memorized' : 'read'} before turning this in.`);
+  const t = now();
+  Object.assign(s, { status: 'completed', note: str(b.note, { max: 1000, field: 'Note' }), completedAt: t, updatedAt: t });
+  notify(a.teacherId, 'teacher', 'quran', `${user.name} completed “${a.title}”`, a.type === 'memorization' ? 'Ready to hear and review' : 'Ready to review', `#/quran/t/${a.id}`);
+  return { submission: mapQSub(s, a) };
+}, { role: 'student' });
+route('POST', '/api/quran/submissions/:id/review', async ({ user, params, body: b }) => {
+  const s = byId('quranSubmissions', intId(params.id)); if (!s) fail(404, 'Submission not found.');
+  const a = teacherQuranAssignment(user, s.assignmentId);
+  if (s.status !== 'completed' && s.status !== 'approved') fail(409, 'This student has not completed the assignment yet.');
+  const result = b.result === 'redo' ? 'redo' : b.result === 'approved' ? 'approved' : fail(400, 'Choose Approve or Ask to redo.');
+  const t = now();
+  Object.assign(s, { status: result, feedback: str(b.feedback, { max: 2000, field: 'Feedback' }), reviewedAt: t, updatedAt: t });
+  if (result === 'redo') { s.completedAt = null; s.done = ''; }
+  notify(s.studentId, 'student', 'quran', result === 'approved' ? `Approved: ${a.title}` : `Please practise again: ${a.title}`, s.feedback ? s.feedback.slice(0, 90) : (result === 'approved' ? 'Well done!' : 'Your teacher asked you to try again.'), `#/quran/a/${a.id}`);
+  return { submission: mapQSub(s, a) };
+}, { role: 'teacher' });
+route('GET', '/api/quran/progress', async ({ user }) => quranSummary(quranProgressOf(user.id, false)));
+route('POST', '/api/quran/progress', async ({ user, body: b }) => {
+  const surah = qSurah(b.surah);
+  if (b.ayahs !== undefined) {
+    const kind = b.kind === 'mem' ? 'mem' : b.kind === 'read' ? 'read' : fail(400, 'Unknown progress type.');
+    markQuranProgress(user.id, surah, qAyahList(surah, b.ayahs), kind, b.value !== false);
+  }
+  if (b.last) {
+    const ayah = Number(b.last.ayah);
+    if (Number.isInteger(ayah) && ayah >= 1 && ayah <= QURAN_AYAHS[surah - 1]) quranProgressOf(user.id, true).last = { surah, ayah, at: now() };
+  }
+  const p = quranProgressOf(user.id, false);
+  return { summary: quranSummary(p), read: p ? p.read[surah] || '' : '', mem: p ? p.mem[surah] || '' : '' };
+});
+route('GET', '/api/quran/progress/:surah', async ({ user, params }) => {
+  const surah = qSurah(params.surah); const p = quranProgressOf(user.id, false);
+  return { read: [...rangesToSet(p && p.read[surah])], mem: [...rangesToSet(p && p.mem[surah])], last: (p && p.last) || null };
+});
+route('GET', '/api/quran/my-students', async ({ user }) => {
+  const map = new Map();
+  for (const c of db.classes.filter((k) => k.teacherId === user.id)) for (const e of db.enrollments.filter((x) => x.classId === c.id)) {
+    const u = userById(e.studentId); if (!u) continue;
+    if (!map.has(u.id)) map.set(u.id, { id: u.id, name: u.name, classes: [] });
+    map.get(u.id).classes.push(c.name);
+  }
+  const mine = db.quranAssignments.filter((a) => a.teacherId === user.id);
+  return {
+    students: [...map.values()].map((s) => {
+      const sum = quranSummary(quranProgressOf(s.id, false));
+      const as = mine.filter((a) => canStudentSeeQ(a, s.id)); const subs = as.map((a) => qSubFor(a.id, s.id)).filter(Boolean);
+      return { ...s, read: sum.read.total, memorized: sum.memorized.total, assigned: as.length, done: subs.filter((x) => x.status === 'completed' || x.status === 'approved').length };
+    }).sort(sortByName),
+  };
+}, { role: 'teacher' });
+route('GET', '/api/quran/students/:id', async ({ user, params }) => {
+  const sid = intId(params.id);
+  if (!db.classes.some((c) => c.teacherId === user.id && enrolled(c.id, sid))) fail(404, 'Student not found.');
+  const st = userById(sid); if (!st) fail(404, 'Student not found.');
+  const list = db.quranAssignments.filter((a) => a.teacherId === user.id && canStudentSeeQ(a, sid)).map((a) => {
+    const s = qSubFor(a.id, sid);
+    return mapQAssignment(a, { status: s ? s.status : 'not_started', doneCount: qDoneCount(s) });
+  });
+  return { student: { id: st.id, name: st.name }, summary: quranSummary(quranProgressOf(sid, false)), assignments: list };
 }, { role: 'teacher' });
 
 /* ---------------- dispatcher ---------------- */

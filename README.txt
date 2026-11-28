@@ -48,3 +48,15 @@ DEPLOY ON NETLIFY ONLY (shared database via Netlify DB / Postgres)
   3. Redeploy. Tables are created automatically on the first request.
   Every request takes a Postgres advisory lock, so simultaneous users never overwrite each other.
   Limits: uploads/recordings up to 5 MB (Netlify Functions request limit).
+
+LEARN QURAN
+  A separate section for teachers and students (sidebar: "Learn Quran"). Quran assignments,
+  submissions and reading/memorization progress are stored apart from regular assignments and grades.
+  Text files: quran/index.json + quran/s001.json ... s114.json (114 surahs, 6,236 ayahs), built from
+  verified sources, never typed by hand or generated:
+    Arabic   - Tanzil Uthmani text via AlQuran.cloud (edition quran-uthmani)
+    English  - Saheeh International via AlQuran.cloud (en.sahih)
+    Uzbek    - Muhammad Sodiq Muhammad Yusuf (Latin) via Quran.com (translation 55)
+    Surah names / Makki-Madani - Quran.com chapters API (cross-checked with AlQuran.cloud)
+  The Basmalah is shown as a header (it is ayah 1 only in Al-Fatihah; At-Tawbah has none).
+  The quran/ folder must be deployed next to index.html (netlify.toml copies it into dist/).
