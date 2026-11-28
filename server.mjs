@@ -3,8 +3,6 @@
 // One shared database for every teacher and student, on any device. No dependencies (Node 20+).
 //   node server.mjs            ->  http://localhost:8080
 //   PORT=3000 DATA_DIR=/data node server.mjs
-// Storage: if DATABASE_URL (Postgres) is set — as on Railway — everything is stored there.
-//          Otherwise a JSON file + files folder in DATA_DIR is used.
 import http from 'node:http';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
@@ -13,7 +11,6 @@ import zlib from 'node:zlib';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { localRequest, setEnv, LocalError } from './engine.mjs';
-import { hasDatabaseUrl, handlePgRequest } from './pg-api.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 8080;
@@ -23,11 +20,10 @@ const FILES = path.join(DATA, 'files');
 const DB_FILE = path.join(DATA, 'db.json');
 const MAX_JSON = 2 * 1024 * 1024;
 const MAX_UPLOAD = 32 * 1024 * 1024;
-const USE_PG = hasDatabaseUrl();
-if (!USE_PG) fs.mkdirSync(FILES, { recursive: true });
+fs.mkdirSync(FILES, { recursive: true });
 
 /* ---- storage environment for the shared engine ---- */
-let dbText = !USE_PG && fs.existsSync(DB_FILE) ? fs.readFileSync(DB_FILE, 'utf8') : null;
+let dbText = fs.existsSync(DB_FILE) ? fs.readFileSync(DB_FILE, 'utf8') : null;
 const fileP = (key) => path.join(FILES, String(key).replace(/[^A-Za-z0-9._-]/g, '_'));
 async function atomicWrite(file, text) {
   const tmp = `${file}.${process.pid}.tmp`;
@@ -57,7 +53,6 @@ const SEC = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'microphone=(self)',
   'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-  'Strict-Transport-Security': 'max-age=31536000',
 };
 const titleCase = (h) => h.split('-').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('-');
 function readBody(req, limit) {
@@ -87,7 +82,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://x');
     const p = url.pathname;
     if (p === '/favicon.ico') return send(res, 204, undefined);
-    if (p === '/api/health' && !USE_PG) return sendJson(res, 200, { assignmentpro: true, mode: 'server' });
+    if (p === '/api/health') return sendJson(res, 200, { assignmentpro: true, mode: 'server' });
     if (p.startsWith('/api/')) return await handleApi(req, res, url);
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
     if (p === '/' || p === '/index.html') {
@@ -104,32 +99,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-/** Postgres mode: adapt the Node request to a standard Request and let pg-api.mjs answer. */
-async function handleApiPg(req, res, url) {
-  const method = req.method;
-  let body;
-  if (method !== 'GET' && method !== 'HEAD') {
-    const buf = await readBody(req, MAX_UPLOAD);
-    if (buf.length) body = buf;
-  }
-  const headers = new Headers();
-  for (const [k, v] of Object.entries(req.headers)) headers.set(k, Array.isArray(v) ? v.join(', ') : v);
-  const proto = req.headers['x-forwarded-proto'] || 'http';
-  const r = await handlePgRequest(new Request(`${proto}://${req.headers.host || 'localhost'}${url.pathname}${url.search}`, { method, headers, body }));
-  const out = {};
-  r.headers.forEach((v, k) => { out[k] = v; });
-  return send(res, r.status, Buffer.from(await r.arrayBuffer()), out);
-}
-
 async function handleApi(req, res, url) {
-  if (USE_PG) {
-    try { return await handleApiPg(req, res, url); }
-    catch (e) {
-      if (e instanceof LocalError) return sendJson(res, e.status || 500, { error: e.message });
-      console.error('[api]', req.method, url.pathname, e);
-      return sendJson(res, 500, { error: 'Something went wrong. Please try again.' });
-    }
-  }
   const method = req.method;
   const auth = String(req.headers.authorization || '');
   const ctx = { token: auth.startsWith('Bearer ') ? auth.slice(7).trim() : null, out: {} };
@@ -175,7 +145,7 @@ server.listen(PORT, HOST, () => {
   console.log(`\n  AssignmentPro is running:  http://localhost:${PORT}`);
   const lan = Object.values(os.networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => `http://${i.address}:${PORT}`);
   if (lan.length) console.log(`  Same Wi-Fi (sign-in + class work; mic needs https): ${lan.join('  ')}`);
-  console.log(USE_PG ? '  Storage: PostgreSQL (DATABASE_URL)' : `  Shared database folder:    ${DATA}`);
+  console.log(`  Shared database folder:    ${DATA}`);
   console.log('  Keep this window open. Press Ctrl+C to stop.\n');
 });
 for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 1500).unref(); });
