@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#080c1d">
-  <script>try{var t=localStorage.getItem("ap_theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="dark"}</script>
+  <script>try{var t=localStorage.getItem("ap_theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;var p=localStorage.getItem("ap_palette");if(p)document.documentElement.dataset.palette=p}catch(e){document.documentElement.dataset.theme="dark"}</script>
   <meta name="description" content="AssignmentPro — create, assign, complete and grade assignments with written and audio answers. Created by ZEEYO.">
   <title>AssignmentPro</title>
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjOGI3YmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjJkM2VlIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iMTYiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI0LjUiIHk9IjQuNSIgd2lkdGg9IjU1IiBoZWlnaHQ9IjU1IiByeD0iMTUuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjQ1Ii8+PHBhdGggZD0iTTIwIDMzLjVsOCA4IDE2LTE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+Cg==">
@@ -68,14 +68,28 @@ p { margin: 0; }
 
 /* ---------- Ambient scene ---------- */
 .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; background:
-  radial-gradient(1200px 800px at 85% -10%, #1a1f55 0%, transparent 60%),
-  radial-gradient(900px 700px at -10% 110%, #10295a 0%, transparent 60%),
+  radial-gradient(1200px 800px at 85% -10%, var(--sc1, #1a1f55) 0%, transparent 60%),
+  radial-gradient(900px 700px at -10% 110%, var(--sc2, #10295a) 0%, transparent 60%),
   linear-gradient(180deg, #080c1f 0%, #070a18 100%); }
 .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
-.orb-a { width: 520px; height: 520px; left: -120px; top: -140px; background: radial-gradient(circle at 30% 30%, #7b6cff, transparent 65%); }
-.orb-b { width: 620px; height: 620px; right: -200px; top: 18%; background: radial-gradient(circle at 60% 40%, #19b5d8, transparent 62%); opacity: .38; }
-.orb-c { width: 520px; height: 520px; left: 30%; bottom: -260px; background: radial-gradient(circle at 50% 50%, #d9479b, transparent 60%); opacity: .25; }
+.orb-a { width: 520px; height: 520px; left: -120px; top: -140px; background: radial-gradient(circle at 30% 30%, var(--oa, #7b6cff), transparent 65%); }
+.orb-b { width: 620px; height: 620px; right: -200px; top: 18%; background: radial-gradient(circle at 60% 40%, var(--ob, #19b5d8), transparent 62%); opacity: .38; }
+.orb-c { width: 520px; height: 520px; left: 30%; bottom: -260px; background: radial-gradient(circle at 50% 50%, var(--oc, #d9479b), transparent 60%); opacity: .25; }
 .grain { position: absolute; inset: 0; opacity: .05; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+
+/* ---------- Colour palettes (pick one in the sidebar) ---------- */
+html[data-palette="ocean"]     { --violet:#38bdf8; --violet-2:#0ea5e9; --cyan:#2dd4bf; --pink:#818cf8; --link:#9bdcff; --sc1:#0b3a66; --sc2:#06443f; --sl1:#d3ebff; --sl2:#d0f5ee; --oa:#38bdf8; --ob:#2dd4bf; --oc:#6366f1; }
+html[data-palette="sunset"]    { --violet:#fb923c; --violet-2:#f97316; --cyan:#fbbf24; --pink:#f43f5e; --link:#ffc79a; --sc1:#4d1f35; --sc2:#4d2c0f; --sl1:#ffe3d2; --sl2:#ffd8e1; --oa:#fb923c; --ob:#f43f5e; --oc:#fbbf24; }
+html[data-palette="forest"]    { --violet:#34d399; --violet-2:#10b981; --cyan:#a3e635; --pink:#2dd4bf; --link:#a6f0cd; --sc1:#0f3d2e; --sc2:#24401a; --sl1:#d5f5e3; --sl2:#e7f6c8; --oa:#34d399; --ob:#a3e635; --oc:#14b8a6; }
+html[data-palette="bubblegum"] { --violet:#f472b6; --violet-2:#ec4899; --cyan:#c084fc; --pink:#fb7185; --link:#ffb4dc; --sc1:#4d1a50; --sc2:#2f1a5e; --sl1:#ffe0f1; --sl2:#eadcff; --oa:#f472b6; --ob:#c084fc; --oc:#fb7185; }
+html[data-palette="gold"]      { --violet:#fbbf24; --violet-2:#f59e0b; --cyan:#f97316; --pink:#fb7185; --link:#ffe08a; --sc1:#4a3410; --sc2:#4a2410; --sl1:#fff0c9; --sl2:#ffe2cc; --oa:#fbbf24; --ob:#f97316; --oc:#fb7185; }
+html[data-palette] { --accent: linear-gradient(135deg, var(--violet) 0%, var(--violet-2) 48%, var(--cyan) 100%); }
+.palette { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+.swatch { width: 20px; height: 20px; border-radius: 50%; border: 0; padding: 0; background: var(--dot); box-shadow: 0 0 0 1px rgb(var(--ink) / .25), 0 2px 6px rgba(0,0,0,.25); transition: transform .25s var(--spring), box-shadow .2s; }
+.swatch:hover { transform: scale(1.2); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--violet); transform: scale(1.1); }
+.palette-cycle .swatch { display: block; margin: auto; }
 
 /* ---------- Liquid glass surface ---------- */
 .glass {
@@ -672,7 +686,7 @@ html[data-theme="light"] {
   --shadow: 0 22px 54px -26px rgba(40, 52, 120, .38), 0 2px 6px rgba(40, 52, 120, .08);
   color-scheme: light;
 }
-html[data-theme="light"] .scene { background: radial-gradient(1100px 760px at 88% -10%, #dfe3ff 0%, transparent 60%), radial-gradient(900px 700px at -10% 108%, #d4ecff 0%, transparent 62%), linear-gradient(180deg, #f2f4fd 0%, #e8ecfa 100%); }
+html[data-theme="light"] .scene { background: radial-gradient(1100px 760px at 88% -10%, var(--sl1, #dfe3ff) 0%, transparent 60%), radial-gradient(900px 700px at -10% 108%, var(--sl2, #d4ecff) 0%, transparent 62%), linear-gradient(180deg, #f2f4fd 0%, #e8ecfa 100%); }
 html[data-theme="light"] .orb { opacity: .32; filter: blur(80px); }
 html[data-theme="light"] .orb-c { opacity: .16; }
 html[data-theme="light"] .glass { background: linear-gradient(160deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .56) 46%, rgba(255, 255, 255, .46) 100%);
@@ -750,6 +764,7 @@ const SESSION_SHORT = 12 * 3600 * 1000;
 const SESSION_LONG = 30 * 24 * 3600 * 1000;
 const MAX_AUDIO = 30 * 1024 * 1024;
 const MAX_ATTACHMENT = 25 * 1024 * 1024;
+const MAX_CLASS_STUDENTS = 38;
 const TOKEN_KEY = 'ap-session-token';
 
 class LocalError extends Error { constructor(status, message) { super(message); this.status = status; } }
@@ -959,6 +974,7 @@ function contactIds(userId) {
 /* ---------------- lookups & access rules ---------------- */
 const byId = (t, id) => db[t].find((x) => x.id === id);
 const userById = (id) => byId('users', id);
+const classFull = (c) => db.enrollments.filter((e) => e.classId === c.id).length >= MAX_CLASS_STUDENTS;
 const enrolled = (classId, studentId) => db.enrollments.some((e) => e.classId === classId && e.studentId === studentId);
 function teacherClass(user, classId) { const c = db.classes.find((x) => x.id === classId && x.teacherId === user.id); if (!c) fail(404, 'Class not found.'); return c; }
 function teacherAssignment(user, id) { const a = db.assignments.find((x) => x.id === id && x.teacherId === user.id); if (!a) fail(404, 'Assignment not found.'); return a; }
@@ -1051,12 +1067,13 @@ route('POST', '/api/auth/register', async ({ body: b }) => {
   const u = { id: nextId('users'), role, roles: [role], name, email, passHash: await hashPassword(pw), createdAt: now() };
   db.users.push(u);
   await createSession(u.id, !!b.remember);
-  let joined = null;
+  let joined = null, classIsFull = null;
   if (role === 'student' && typeof b.inviteCode === 'string' && b.inviteCode.trim()) {
     const c = classByCode(b.inviteCode);
-    if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
+    if (c && classFull(c)) classIsFull = c.name;
+    else if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
   }
-  return { user: publicUser(u), joined };
+  return { user: publicUser(u), joined, classIsFull };
 }, { auth: false });
 
 route('POST', '/api/auth/login', async ({ body: b }) => {
@@ -1082,7 +1099,7 @@ route('POST', '/api/auth/oauth', async ({ body: b }) => {
   let email = String(b.email || '').trim().toLowerCase().slice(0, 160);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = '';
   let u = db.users.find((x) => x.oauth && x.oauth[provider] === pid);
-  let joined = null;
+  let joined = null, classIsFull = null;
   if (!u && email) u = db.users.find((x) => x.email === email);
   let roleAdded = false;
   if (u) { u.oauth = { ...(u.oauth || {}), [provider]: pid }; roleAdded = activateRole(u, b.role); }
@@ -1093,11 +1110,12 @@ route('POST', '/api/auth/oauth', async ({ body: b }) => {
     db.users.push(u);
     if (role === 'student' && typeof b.inviteCode === 'string' && b.inviteCode.trim()) {
       const c = classByCode(b.inviteCode);
-      if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
+      if (c && classFull(c)) classIsFull = c.name;
+      else if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
     }
   }
   await createSession(u.id, !!b.remember);
-  return { user: publicUser(u), joined, roleAdded };
+  return { user: publicUser(u), joined, roleAdded, classIsFull };
 }, { auth: false });
 
 route('POST', '/api/auth/logout', async () => {
@@ -1160,6 +1178,7 @@ route('POST', '/api/classes/join', async ({ user, body: b }) => {
   const c = classByCode(code);
   if (!c) fail(404, `No class matches the code ${code}. Check it with your teacher.`);
   const existed = enrolled(c.id, user.id);
+  if (!existed && classFull(c)) fail(409, `${c.name} is full (${MAX_CLASS_STUDENTS} students maximum). Ask your teacher for help.`);
   if (!existed) { db.enrollments.push({ classId: c.id, studentId: user.id, joinedAt: now() }); notifyJoined(user, c); }
   return { class: { id: c.id, name: c.name, subject: c.subject, teacher: userById(c.teacherId)?.name }, alreadyMember: existed };
 }, { role: 'student' });
@@ -2122,9 +2141,32 @@ function setTheme(t) {
   const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t === 'light' ? '#eef1fb' : '#080c1d');
   document.querySelectorAll('[data-theme-toggle]').forEach((b) => { b.innerHTML = icon(t === 'light' ? 'moon' : 'sun'); b.setAttribute('aria-label', t === 'light' ? 'Switch to dark theme' : 'Switch to light theme'); });
 }
+/* ---------------- Colour palettes ---------------- */
+const PALETTES = [
+  { key: 'aurora', name: 'Aurora', dot: 'linear-gradient(135deg,#8b7bff,#22d3ee)' },
+  { key: 'ocean', name: 'Ocean', dot: 'linear-gradient(135deg,#38bdf8,#2dd4bf)' },
+  { key: 'sunset', name: 'Sunset', dot: 'linear-gradient(135deg,#fb923c,#f43f5e)' },
+  { key: 'forest', name: 'Forest', dot: 'linear-gradient(135deg,#34d399,#a3e635)' },
+  { key: 'bubblegum', name: 'Bubblegum', dot: 'linear-gradient(135deg,#f472b6,#c084fc)' },
+  { key: 'gold', name: 'Gold', dot: 'linear-gradient(135deg,#fbbf24,#f97316)' },
+];
+const currentPalette = () => document.documentElement.dataset.palette || 'aurora';
+function setPalette(k) {
+  if (!PALETTES.some((p) => p.key === k)) k = 'aurora';
+  if (k === 'aurora') delete document.documentElement.dataset.palette; else document.documentElement.dataset.palette = k;
+  try { localStorage.setItem('ap_palette', k); } catch { /* ignore */ }
+  document.querySelectorAll('[data-palette-pick]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.palettePick === k)));
+  document.querySelectorAll('[data-palette-cycle]').forEach((b) => { b.style.setProperty('--dot', PALETTES.find((p) => p.key === k).dot); });
+}
+const paletteSwatches = () => `<div class="palette" role="group" aria-label="Colour theme">${PALETTES.map((p) => `<button type="button" class="swatch" data-palette-pick="${p.key}" aria-pressed="${p.key === currentPalette()}" title="${p.name}" aria-label="${p.name} theme" style="--dot:${p.dot}"></button>`).join('')}</div>`;
+const paletteCycleButton = () => `<button type="button" class="icon-btn palette-cycle" data-palette-cycle aria-label="Change colour theme" style="--dot:${(PALETTES.find((p) => p.key === currentPalette()) || PALETTES[0]).dot}"><span class="swatch"></span></button>`;
+document.addEventListener('click', (e) => {
+  const pick = e.target.closest('[data-palette-pick]'); if (pick) { setPalette(pick.dataset.palettePick); return; }
+  if (e.target.closest('[data-palette-cycle]')) { const i = PALETTES.findIndex((p) => p.key === currentPalette()); setPalette(PALETTES[(i + 1) % PALETTES.length].key); }
+});
 const themeButton = (cls = 'icon-btn') => `<button type="button" class="${cls}" data-theme-toggle aria-label="${currentTheme() === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}">${icon(currentTheme() === 'light' ? 'moon' : 'sun')}</button>`;
 
-Object.assign(__m.core, { $, $$, esc, icon, brandMark, brandHTML, zeeyo, ApiError, api, upload, state, setSessionLostHandler, STATUS, chip, fmtDateTime, fmtDate, timeAgo, dueLabel, isOverdue, fmtDuration, fmtSize, initials, avatar, toLocalInput, stripHtml, toast, openModal, isModalOpen, confirmDialog, exitConfirm, viewAlive, addRoute, setLeaveGuard, urlRouting, routeHash, replaceHashSilently, navigate, query, initRouter, handleRoute, initGlassLight, loadingView, errorView, copyText, debounce, onSubmit, freshRoot, currentTheme, setTheme, themeButton });
+Object.assign(__m.core, { $, $$, esc, icon, brandMark, brandHTML, zeeyo, ApiError, api, upload, state, setSessionLostHandler, STATUS, chip, fmtDateTime, fmtDate, timeAgo, dueLabel, isOverdue, fmtDuration, fmtSize, initials, avatar, toLocalInput, stripHtml, toast, openModal, isModalOpen, confirmDialog, exitConfirm, viewAlive, addRoute, setLeaveGuard, urlRouting, routeHash, replaceHashSilently, navigate, query, initRouter, handleRoute, initGlassLight, loadingView, errorView, copyText, debounce, onSubmit, freshRoot, currentTheme, setTheme, themeButton, paletteSwatches, paletteCycleButton, setPalette });
 })();
 
 /* ===== oauth.js ===== */
@@ -3415,7 +3457,7 @@ async function classesView() {
     <div class="grid grid-auto">
       ${data.classes.length ? data.classes.map((c) => `<a class="card glass" href="#/t/classes/${c.id}">
         <div class="row" style="gap:12px"><span class="avatar" style="--av:linear-gradient(135deg,#8b7bff,#22d3ee)">${icon('book')}</span><div style="min-width:0"><h3>${esc(c.name)}</h3><div class="muted">${esc(c.subject || 'Class')}</div></div></div>
-        <div class="meta-row"><span>${icon('grad')}${c.students} student${c.students === 1 ? '' : 's'}</span><span>${icon('book')}${c.assignments} assignment${c.assignments === 1 ? '' : 's'}</span></div>
+        <div class="meta-row"><span>${icon('grad')}${c.students}/38 student${c.students === 1 ? '' : 's'}</span><span>${icon('book')}${c.assignments} assignment${c.assignments === 1 ? '' : 's'}</span></div>
         <div class="card-foot"><span class="code">${esc(c.inviteCode)}</span><span class="spacer"></span><button class="icon-btn sm" data-copy="${esc(c.inviteCode)}" aria-label="Copy class code" title="Copy class code">${icon('copy')}</button></div>
       </a>`).join('') : `<div class="glass panel empty" style="grid-column:1/-1"><div class="art">${icon('users')}</div><h3>No classes yet</h3><p>Create a class to get an class code for your students.</p><button class="btn btn-primary" data-act="new">${icon('plus')}Create class</button></div>`}
     </div></div>`;
@@ -3436,7 +3478,7 @@ async function classDetail({ id }) {
   const c = d.class;
   v.innerHTML = `<div class="view">
     <div class="crumbs"><a href="#/t/classes">Classes</a>${icon('chevronR')}<span>${esc(c.name)}</span></div>
-    <div class="page-head"><div><h1>${esc(c.name)}</h1><p class="sub">${esc(c.subject || 'Class')} · ${d.students.length} student${d.students.length === 1 ? '' : 's'}</p></div>
+    <div class="page-head"><div><h1>${esc(c.name)}</h1><p class="sub">${esc(c.subject || 'Class')} · ${d.students.length}/38 student${d.students.length === 1 ? '' : 's'}</p></div>
       <div class="row-wrap"><button class="btn" data-act="edit">${icon('edit')}Edit</button><button class="btn btn-ghost" data-act="delete">${icon('trash')}Delete</button>
       <a class="btn btn-primary" href="#/t/assignments/new?class=${c.id}">${icon('plus')}Assign a task</a></div></div>
     <div class="split">
@@ -4159,7 +4201,7 @@ __m.app = {};
 (() => {
 Object.assign(__m.app, { homeFor, shell, refreshBadges, guard, logout });
 // AssignmentPro — application shell, auth and settings. CREATED BY ZEEYO
-const { $, $$, esc, icon, api, state, addRoute, handleRoute, navigate, query, toast, avatar, brandHTML, zeeyo, initGlassLight, setSessionLostHandler, confirmDialog, viewAlive, onSubmit, initRouter, routeHash, themeButton, setTheme, currentTheme } = __m.core;
+const { $, $$, esc, icon, api, state, addRoute, handleRoute, navigate, query, toast, avatar, brandHTML, zeeyo, initGlassLight, setSessionLostHandler, confirmDialog, viewAlive, onSubmit, initRouter, routeHash, themeButton, setTheme, currentTheme, paletteSwatches, paletteCycleButton } = __m.core;
 const { fileURL, attachmentInfo, storageCheck, initBackend, isServerMode } = __m.backend;
 const { socialLogin, PROVIDERS } = __m.oauth;
 const { registerMessageRoutes, ensurePolling, stopPolling, bindBell } = __m.social;
@@ -4205,12 +4247,13 @@ function shell(active) {
         </nav>
         <div class="sidebar-foot">
           <a class="user-chip" href="#/settings">${avatar(u.name)}<div class="meta"><div class="name">${esc(u.name)}</div><div class="role">${u.role}</div></div></a>
-          <div class="row" style="gap:6px;margin-top:8px"><button type="button" class="btn btn-sm btn-ghost role-switch" data-switch-role title="Switch between your student and teacher views" style="margin:0;flex:1">${icon('swap')}${u.role === 'teacher' ? 'Student' : 'Teacher'} view</button>${themeButton()}</div>
+          <div class="row" style="gap:6px;margin-top:8px">${u.role === 'teacher' ? `<button type="button" class="btn btn-sm btn-ghost role-switch" data-switch-role title="Switch to your student view" style="margin:0;flex:1">${icon('swap')}Student view</button>` : '<span style="flex:1"></span>'}${themeButton()}</div>
+          ${paletteSwatches()}
           ${zeeyo()}
         </div>
       </div></aside>
       <div class="main">
-        <header class="topbar-m">${brandHTML(homeFor(u))}<span class="row" style="gap:8px">${themeButton()}<button type="button" class="icon-btn bell" data-bell aria-label="Notifications">${icon('bell')}<span class="bell-badge" data-bell-badge hidden></span></button><a href="#/settings" aria-label="Account">${avatar(u.name, 'sm')}</a></span></header>
+        <header class="topbar-m">${brandHTML(homeFor(u))}<span class="row" style="gap:8px">${paletteCycleButton()}${themeButton()}<button type="button" class="icon-btn bell" data-bell aria-label="Notifications">${icon('bell')}<span class="bell-badge" data-bell-badge hidden></span></button><a href="#/settings" aria-label="Account">${avatar(u.name, 'sm')}</a></span></header>
         <main id="view"></main>
       </div>
       <nav class="tabbar glass" aria-label="Main">
@@ -4351,7 +4394,7 @@ function authView(mode) {
       const rem = $('[name=remember]', card);
       const r = await api('POST', '/api/auth/oauth', { ...p, role, remember: rem ? rem.checked : true, inviteCode: role === 'student' ? ($('#f-code') ? $('#f-code').value : code) : '' });
       state.user = r.user;
-      toast(r.roleAdded ? `Your account now also has a ${r.user.role} profile. You can switch any time.` : r.joined ? `Welcome! You joined ${r.joined}.` : `Welcome, ${r.user.name.split(' ')[0]}!`);
+      toast(r.roleAdded ? `Your account now also has a ${r.user.role} profile. You can switch any time.` : r.joined ? `Welcome! You joined ${r.joined}.` : r.classIsFull ? `Welcome! ${r.classIsFull} is full (38 students max), so you were not added.` : `Welcome, ${r.user.name.split(' ')[0]}!`);
       navigate(next && next.startsWith('#/') && !/^#\/(login|register)/.test(next) ? next : homeFor(r.user), { replace: true });
     } catch (err) {
       if (!err.cancelled) { errEl.innerHTML = `${icon('alert')}<span>${esc(err.message)}</span>`; errEl.hidden = false; }
@@ -4378,6 +4421,7 @@ function authView(mode) {
       state.user = r.user; try { localStorage.setItem('ap_last_role', r.user.role); } catch { /* ignore */ }
       if (r.roleAdded) toast(`Your account now also has a ${r.user.role} profile. You can switch any time.`);
       else if (r.joined) toast(`Welcome! You joined ${r.joined}.`);
+      else if (r.classIsFull) toast(`${r.classIsFull} is full (38 students max), so you were not added.`, 'err');
       else toast(reg ? `Welcome to AssignmentPro, ${r.user.name.split(' ')[0]}!` : `Welcome back, ${r.user.name.split(' ')[0]}!`);
       const dest = next && next.startsWith('#/') && !/^#\/(login|register)/.test(next) ? next : homeFor(r.user);
       navigate(dest, { replace: true });

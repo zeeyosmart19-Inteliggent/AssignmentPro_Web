@@ -6,6 +6,7 @@ const SESSION_SHORT = 12 * 3600 * 1000;
 const SESSION_LONG = 30 * 24 * 3600 * 1000;
 const MAX_AUDIO = 30 * 1024 * 1024;
 const MAX_ATTACHMENT = 25 * 1024 * 1024;
+const MAX_CLASS_STUDENTS = 38;
 const TOKEN_KEY = 'ap-session-token';
 
 class LocalError extends Error { constructor(status, message) { super(message); this.status = status; } }
@@ -215,6 +216,7 @@ function contactIds(userId) {
 /* ---------------- lookups & access rules ---------------- */
 const byId = (t, id) => db[t].find((x) => x.id === id);
 const userById = (id) => byId('users', id);
+const classFull = (c) => db.enrollments.filter((e) => e.classId === c.id).length >= MAX_CLASS_STUDENTS;
 const enrolled = (classId, studentId) => db.enrollments.some((e) => e.classId === classId && e.studentId === studentId);
 function teacherClass(user, classId) { const c = db.classes.find((x) => x.id === classId && x.teacherId === user.id); if (!c) fail(404, 'Class not found.'); return c; }
 function teacherAssignment(user, id) { const a = db.assignments.find((x) => x.id === id && x.teacherId === user.id); if (!a) fail(404, 'Assignment not found.'); return a; }
@@ -307,12 +309,13 @@ route('POST', '/api/auth/register', async ({ body: b }) => {
   const u = { id: nextId('users'), role, roles: [role], name, email, passHash: await hashPassword(pw), createdAt: now() };
   db.users.push(u);
   await createSession(u.id, !!b.remember);
-  let joined = null;
+  let joined = null, classIsFull = null;
   if (role === 'student' && typeof b.inviteCode === 'string' && b.inviteCode.trim()) {
     const c = classByCode(b.inviteCode);
-    if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
+    if (c && classFull(c)) classIsFull = c.name;
+    else if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
   }
-  return { user: publicUser(u), joined };
+  return { user: publicUser(u), joined, classIsFull };
 }, { auth: false });
 
 route('POST', '/api/auth/login', async ({ body: b }) => {
@@ -338,7 +341,7 @@ route('POST', '/api/auth/oauth', async ({ body: b }) => {
   let email = String(b.email || '').trim().toLowerCase().slice(0, 160);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = '';
   let u = db.users.find((x) => x.oauth && x.oauth[provider] === pid);
-  let joined = null;
+  let joined = null, classIsFull = null;
   if (!u && email) u = db.users.find((x) => x.email === email);
   let roleAdded = false;
   if (u) { u.oauth = { ...(u.oauth || {}), [provider]: pid }; roleAdded = activateRole(u, b.role); }
@@ -349,11 +352,12 @@ route('POST', '/api/auth/oauth', async ({ body: b }) => {
     db.users.push(u);
     if (role === 'student' && typeof b.inviteCode === 'string' && b.inviteCode.trim()) {
       const c = classByCode(b.inviteCode);
-      if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
+      if (c && classFull(c)) classIsFull = c.name;
+      else if (c) { db.enrollments.push({ classId: c.id, studentId: u.id, joinedAt: now() }); joined = c.name; notifyJoined(u, c); }
     }
   }
   await createSession(u.id, !!b.remember);
-  return { user: publicUser(u), joined, roleAdded };
+  return { user: publicUser(u), joined, roleAdded, classIsFull };
 }, { auth: false });
 
 route('POST', '/api/auth/logout', async () => {
@@ -416,6 +420,7 @@ route('POST', '/api/classes/join', async ({ user, body: b }) => {
   const c = classByCode(code);
   if (!c) fail(404, `No class matches the code ${code}. Check it with your teacher.`);
   const existed = enrolled(c.id, user.id);
+  if (!existed && classFull(c)) fail(409, `${c.name} is full (${MAX_CLASS_STUDENTS} students maximum). Ask your teacher for help.`);
   if (!existed) { db.enrollments.push({ classId: c.id, studentId: user.id, joinedAt: now() }); notifyJoined(user, c); }
   return { class: { id: c.id, name: c.name, subject: c.subject, teacher: userById(c.teacherId)?.name }, alreadyMember: existed };
 }, { role: 'student' });
