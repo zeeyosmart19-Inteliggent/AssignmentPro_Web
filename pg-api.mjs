@@ -1,11 +1,11 @@
-// AssignmentPro — Netlify Function. Runs the shared engine on top of Netlify DB (Postgres). CREATED BY ZEEYO
+// AssignmentPro — Postgres backend (used by server.mjs when DATABASE_URL is set, e.g. on Railway). CREATED BY ZEEYO
 // Every request runs inside one Postgres transaction that first takes a global advisory lock, so
 // concurrent requests (even on different function instances) are applied one at a time and never
 // overwrite each other.
-import { localRequest, setEnv, LocalError } from '../../engine.mjs';
+import { localRequest, setEnv, LocalError } from './engine.mjs';
 
 const MAX_JSON = 2 * 1024 * 1024;
-const MAX_UPLOAD = 5 * 1024 * 1024; // Netlify Functions accept request bodies up to ~6 MB
+const MAX_UPLOAD = 32 * 1024 * 1024;
 const LOCK_ID = 727001;
 const SEC = {
   'X-Content-Type-Options': 'nosniff',
@@ -82,7 +82,7 @@ export async function handleApi(req, connect) {
   if (url.pathname === '/api/health') return json(200, { assignmentpro: true, mode: 'server' });
   if (url.pathname === '/api/health/db') {
     try { await withDb(connect, async () => (await q('SELECT 1')).rows); return json(200, { ok: true }); }
-    catch (e) { return json(500, { ok: false, error: String((e && e.message) || e), databases: await dbReport().catch(() => []) }); }
+    catch (e) { return json(500, { ok: false, error: String((e && e.message) || e) }); }
   }
   const auth = req.headers.get('authorization') || '';
   const ctx = { token: auth.startsWith('Bearer ') ? auth.slice(7).trim() : null, out: {} };
@@ -107,7 +107,7 @@ export async function handleApi(req, connect) {
         if (buf.length > MAX_JSON) throw new LocalError(413, 'That request is too large.');
         try { body = buf.length ? JSON.parse(buf.toString('utf8')) : {}; } catch { throw new LocalError(400, 'Invalid request.'); }
       } else {
-        if (buf.length > MAX_UPLOAD) throw new LocalError(413, 'That upload is too large (limit 5 MB).');
+        if (buf.length > MAX_UPLOAD) throw new LocalError(413, 'That upload is too large (limit 32 MB).');
         blob = new Blob([buf], { type: ctype });
       }
     }
@@ -123,30 +123,16 @@ export async function handleApi(req, connect) {
   }
 }
 
-/** A fresh connection per request: Netlify freezes idle function instances, which kills pooled connections. */
-function envEntries() {
-  const out = { ...process.env };
-  try { if (typeof Netlify !== 'undefined' && Netlify.env && Netlify.env.toObject) Object.assign(out, Netlify.env.toObject()); } catch { /* not on Netlify */ }
-  return out;
-}
 const isPg = (v) => typeof v === 'string' && /^postgres(ql)?:\/\//i.test(v.trim());
-/** Known names first, then any variable whose value is a Postgres URL (so a differently named variable still works). */
-const URL_VARS = ['NETLIFY_DB_URL', 'NETLIFY_DATABASE_URL_UNPOOLED', 'NETLIFY_DATABASE_URL', 'DATABASE_URL', 'NEON_DATABASE_URL', 'POSTGRES_URL', 'POSTGRES_PRISMA_URL'];
-/** Every Postgres URL visible to the function (known names first, then any other variable holding one). */
+const URL_VARS = ['DATABASE_URL', 'DATABASE_PRIVATE_URL', 'DATABASE_PUBLIC_URL', 'POSTGRES_URL'];
+/** Every Postgres URL in the environment (known names first, then any other variable holding one). */
 function dbUrls() {
-  const e = envEntries(); const out = [];
+  const e = process.env; const out = [];
   for (const k of [...URL_VARS, ...Object.keys(e)]) if (isPg(e[k]) && !out.some((x) => x.value === e[k].trim())) out.push({ name: k, value: e[k].trim() });
   return out;
 }
-async function openClient(cs) {
-  const { default: pg } = await import('pg');
-  const url = new URL(cs); url.searchParams.delete('sslmode'); url.searchParams.delete('channel_binding');
-  const local = /^(localhost|127\.0\.0\.1)$/.test(url.hostname);
-  const client = new pg.Client({ connectionString: url.toString(), ssl: local ? false : { rejectUnauthorized: false }, connectionTimeoutMillis: 10000 });
-  client.on('error', (e) => console.warn('[pg]', e.message));
-  await client.connect();
-  return client;
-}
+export const hasDatabaseUrl = () => dbUrls().length > 0;
+
 /** What may this connection's role do? Decides where the tables can live. */
 async function probe(client) {
   const r = await client.query(`SELECT current_user AS u, has_database_privilege(current_user, current_database(), 'CREATE') AS dbc,
@@ -154,39 +140,41 @@ async function probe(client) {
   const x = r.rows[0];
   return { user: x.u, schema: x.ex || x.dbc ? 'assignmentpro' : x.pubc ? 'public' : null };
 }
-export async function dbReport() {
-  const out = [];
-  for (const c of dbUrls()) {
-    const item = { variable: c.name, user: decodeURIComponent(new URL(c.value).username), host: new URL(c.value).hostname };
-    try { const cl = await openClient(c.value); try { item.canCreateIn = (await probe(cl)).schema; } finally { await cl.end().catch(() => {}); } }
-    catch (e) { item.error = e.code || e.message; }
-    out.push(item);
-  }
-  return out;
-}
-let chosen = null; // { value, schema } remembered per instance
-async function connectPg() {
+
+let pool = null, poolSchema = null;
+/** Railway's Node process is long-lived, so a small connection pool is safe and fast. */
+async function getPool() {
+  if (pool) return pool;
   const urls = dbUrls();
-  if (!urls.length) throw new LocalError(503, 'The database is not connected. In Netlify, enable Netlify DB for this site (it sets NETLIFY_DATABASE_URL) and redeploy.');
-  const tryOne = async (value) => {
-    const client = await openClient(value);
-    try { const pr = await probe(client); if (!pr.schema) { await client.end().catch(() => {}); return { denied: pr.user }; } client.apSchema = pr.schema; return { client }; }
-    catch (e) { await client.end().catch(() => {}); throw e; }
-  };
+  if (!urls.length) throw new LocalError(503, 'The database is not connected. Add a Postgres database in Railway and set DATABASE_URL on this service (Variable Reference to Postgres.DATABASE_URL).');
+  const { default: pg } = await import('pg');
+  const cs = urls[0].value;
+  const host = new URL(cs).hostname;
+  const internal = /\.railway\.internal$/.test(host) || /^(localhost|127\.0\.0\.1)$/.test(host);
+  const url = new URL(cs); url.searchParams.delete('sslmode'); url.searchParams.delete('channel_binding');
+  const p = new pg.Pool({ connectionString: url.toString(), ssl: internal ? false : { rejectUnauthorized: false }, max: 5, connectionTimeoutMillis: 10000, idleTimeoutMillis: 30000 });
+  p.on('error', (e) => console.warn('[pg]', e.message));
+  const c = await p.connect();
   try {
-    if (chosen) { const r = await tryOne(chosen); if (r.client) return r.client; chosen = null; }
-    let denied = null, lastErr = null;
-    for (const c of urls) {
-      try { const r = await tryOne(c.value); if (r.client) { chosen = c.value; return r.client; } denied = r.denied; } catch (e) { lastErr = e; }
-    }
-    if (denied) throw new LocalError(503, `The database role "${denied}" is not allowed to create tables. Use the database owner's connection string as DATABASE_URL (or run GRANT CREATE ON SCHEMA public TO "${denied}").`);
-    throw lastErr || new Error('no database url');
+    const pr = await probe(c);
+    if (!pr.schema) throw new LocalError(503, `The database role "${pr.user}" is not allowed to create tables. Use the owner's connection string as DATABASE_URL.`);
+    poolSchema = pr.schema;
+  } catch (e) { c.release(); await p.end().catch(() => {}); throw e; }
+  c.release();
+  pool = p;
+  return pool;
+}
+async function connectPg() {
+  try {
+    const client = await (await getPool()).connect();
+    client.apSchema = poolSchema;
+    return client;
   } catch (e) {
     if (e instanceof LocalError) throw e;
     console.error('[db connect]', e);
-    throw new LocalError(503, 'Cannot reach the database (' + (e.code || e.message) + '). Check the Netlify DB connection and redeploy.');
+    throw new LocalError(503, 'Cannot reach the database (' + (e.code || e.message) + '). Check DATABASE_URL on the Railway service.');
   }
 }
 
-export default async (req) => handleApi(req, connectPg);
-export const config = { path: '/api/*' };
+/** Handle a standard Request with the Postgres-backed engine; returns a standard Response. */
+export const handlePgRequest = (req) => handleApi(req, connectPg);
